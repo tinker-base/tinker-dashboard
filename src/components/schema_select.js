@@ -1,91 +1,94 @@
-export const SchemaSelect = () => {
+import { Fragment, useState } from "react";
+import { Listbox, Transition } from "@headlessui/react";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+
+const people = [
+  { id: 1, name: "Wade Cooper" },
+  { id: 2, name: "Arlene Mccoy" },
+  { id: 3, name: "Devon Webb" },
+  { id: 4, name: "Tom Cook" },
+  { id: 5, name: "Tanya Fox" },
+  { id: 6, name: "Hellen Schmidt" },
+  { id: 7, name: "Caroline Schultz" },
+  { id: 8, name: "Mason Heaney" },
+  { id: 9, name: "Claudie Smitham" },
+  { id: 10, name: "Emil Schaefer" },
+];
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+export default function Example() {
+  const [selected, setSelected] = useState(people[3]);
+
   return (
-    <div>
-      <label
-        id="listbox-label"
-        className="block text-sm font-medium leading-6 text-gray-900"
-      >
-        Assigned to
-      </label>
-      <div className="relative mt-2">
-        <button
-          type="button"
-          className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-          aria-haspopup="listbox"
-          aria-expanded="true"
-          aria-labelledby="listbox-label"
-        >
-          <span className="block truncate">Tom Cook</span>
-          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <svg
-              className="h-5 w-5 text-gray-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </span>
-        </button>
-        {/* 
-    <!--
-      Select popover, show/hide based on select state.
-
-      Entering: ""
-        From: ""
-        To: ""
-      Leaving: "transition ease-in duration-100"
-        From: "opacity-100"
-        To: "opacity-0"
-    --> */}
-        <ul
-          className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-          tabIndex="-1"
-          role="listbox"
-          aria-labelledby="listbox-label"
-          aria-activedescendant="listbox-option-3"
-        >
-          {/* <!--
-        Select option, manage highlight styles based on mouseenter/mouseleave and keyboard navigation.
-
-        Highlighted: "bg-indigo-600 text-white", Not Highlighted: "text-gray-900"
-      --> */}
-          <li
-            className="text-gray-900 relative cursor-default select-none py-2 pl-8 pr-4"
-            id="listbox-option-0"
-            role="option"
-          >
-            {/* <!-- Selected: "font-semibold", Not Selected: "font-normal" --> */}
-            <span className="font-normal block truncate">Wade Cooper</span>
-
-            {/* <!--
-          Checkmark, only display for selected option.
-
-          Highlighted: "text-white", Not Highlighted: "text-indigo-600"
-        --> */}
-            <span className="text-indigo-600 absolute inset-y-0 left-0 flex items-center pl-1.5">
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                  clipRule="evenodd"
+    <Listbox value={selected} onChange={setSelected}>
+      {({ open }) => (
+        <>
+          <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">
+            Assigned to
+          </Listbox.Label>
+          <div className="relative mt-2">
+            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+              <span className="block truncate">{selected.name}</span>
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                <ChevronUpDownIcon
+                  className="h-5 w-5 text-gray-400"
+                  aria-hidden="true"
                 />
-              </svg>
-            </span>
-          </li>
+              </span>
+            </Listbox.Button>
 
-          {/* <!-- More items... --> */}
-        </ul>
-      </div>
-    </div>
+            <Transition
+              show={open}
+              as={Fragment}
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                {people.map((person) => (
+                  <Listbox.Option
+                    key={person.id}
+                    className={({ active }) =>
+                      classNames(
+                        active ? "bg-indigo-600 text-white" : "text-gray-900",
+                        "relative cursor-default select-none py-2 pl-8 pr-4"
+                      )
+                    }
+                    value={person}
+                  >
+                    {({ selected, active }) => (
+                      <>
+                        <span
+                          className={classNames(
+                            selected ? "font-semibold" : "font-normal",
+                            "block truncate"
+                          )}
+                        >
+                          {person.name}
+                        </span>
+
+                        {selected ? (
+                          <span
+                            className={classNames(
+                              active ? "text-white" : "text-indigo-600",
+                              "absolute inset-y-0 left-0 flex items-center pl-1.5"
+                            )}
+                          >
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        ) : null}
+                      </>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </Transition>
+          </div>
+        </>
+      )}
+    </Listbox>
   );
-};
+}
