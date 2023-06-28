@@ -35,3 +35,14 @@ export const getAllSchemas = async (url) => {
     return error;
   }
 };
+
+export const checkUser = async (credentials) => {
+  try {
+    return await axios.post(
+      "http://ec2-3-137-184-88.us-east-2.compute.amazonaws.com:3000/rpc/check_user",
+      credentials
+    );
+  } catch (error) {
+    return error;
+  }
+};
