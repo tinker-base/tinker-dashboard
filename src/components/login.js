@@ -1,8 +1,8 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
+import validator from "validator";
 
 export const Login = ({ onSubmit }) => {
-  const navigate = useNavigate();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [validCredentials, setValidCredentials] = React.useState(null);
@@ -21,9 +21,26 @@ export const Login = ({ onSubmit }) => {
     setValidCredentials(null);
   };
 
+  const EmailErrorMessage = () => {
+    if (emailBlur) {
+      if (validator.isEmail(email) === false) {
+        return (
+          <span className="text-red-600 text-xs">Please enter valid email</span>
+        );
+      } else if (validCredentials === false) {
+        return (
+          <span className="text-red-600 text-xs">
+            Invalid Email and/or Password
+          </span>
+        );
+      }
+    }
+    return <span className="opacity-0">hidden</span>;
+  };
+
   return (
-    <>
-      <div className=" bg-indigo-500 flex min-h-full flex-1 flex-col justify-center py-6 sm:px-6 lg:px-8">
+    <div className=" bg-indigo-500 h-screen w-screen flex justify-center ali">
+      <div className="  flex flex-1 flex-col justify-center  sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           {/* <img
             className="mx-auto h-10 w-auto"
@@ -35,7 +52,7 @@ export const Login = ({ onSubmit }) => {
           </h2>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div className="m-6 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
             <form
               className="space-y-5"
@@ -44,11 +61,10 @@ export const Login = ({ onSubmit }) => {
                 if (inputsFilled()) {
                   try {
                     const validation = await onSubmit({
-                      input_email: email,
+                      input_email: email.toLowerCase(),
                       input_password: password,
                     });
-                    console.log(validation);
-                    setValidCredentials(validation);
+                    setValidCredentials(!!validation);
                   } catch (error) {
                     console.log(error);
                   }
@@ -58,7 +74,6 @@ export const Login = ({ onSubmit }) => {
                 }
                 if (validCredentials) {
                   formReset();
-                  navigate("/dashboard");
                 }
               }}
             >
@@ -80,20 +95,7 @@ export const Login = ({ onSubmit }) => {
                     onBlur={() => setEmailBlur(true)}
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
-                  {(email.length === 0 && emailBlur) ||
-                  validCredentials === false ? (
-                    validCredentials === false ? (
-                      <span className="text-red-600 text-xs">
-                        Invalid Email and/or Password
-                      </span>
-                    ) : (
-                      <span className="text-red-600 text-xs">
-                        Email cannot be empty
-                      </span>
-                    )
-                  ) : (
-                    <span className="opacity-0">hidden</span>
-                  )}
+                  <EmailErrorMessage />
                 </div>
               </div>
 
@@ -150,7 +152,7 @@ export const Login = ({ onSubmit }) => {
 
                 <div className="text-sm leading-6">
                   <a
-                    href="#"
+                    href="/"
                     className="font-semibold text-indigo-600 hover:text-indigo-500"
                   >
                     Forgot password?
@@ -167,8 +169,24 @@ export const Login = ({ onSubmit }) => {
                 </button>
               </div>
             </form>
+            <p className="mt-10 text-center text-sm text-gray-500">
+              Not a member?{" "}
+              <Link
+                to="/signup"
+                className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+              >
+                Sign up
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-            <div>
+// GitHub and Twitter login buttons
+/* <div>
               <div className="relative mt-10">
                 <div
                   className="absolute inset-0 flex items-center"
@@ -222,20 +240,4 @@ export const Login = ({ onSubmit }) => {
                   </span>
                 </a>
               </div>
-            </div>
-          </div>
-
-          <p className="mt-10 text-center text-sm text-gray-500">
-            Not a member?{" "}
-            <a
-              href="#"
-              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-            >
-              Start a 14 day free trial
-            </a>
-          </p>
-        </div>
-      </div>
-    </>
-  );
-};
+            </div> */
