@@ -5,17 +5,23 @@ import {
   getAllSchemas,
   getAllTablesInSchema,
   getProjects,
-  checkUser,
+  getUser,
+  uniqueEmail,
+  insertUser,
+  uniqueUsername,
 } from "./services/services";
 // import { TableEditor } from "./components/table_editor";
 import { Tables } from "./components/tables";
 import { Rows } from "./components/rows";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { Projects } from "./components/projects";
-import Example, { Dashboard } from "./components/dashboard";
+import { Dashboard } from "./components/dashboard";
 import { Login } from "./components/login";
+import { Signup } from "./components/signup";
 
 function App() {
+  const navigate = useNavigate();
+  const [username, setUsername] = React.useState("");
   const [projects, setProjects] = React.useState([]);
   const [projectURL, setProjectURL] = React.useState("");
   const [tables, setTables] = React.useState([]);
@@ -84,10 +90,46 @@ function App() {
 
   const handleLogin = async (credentials) => {
     try {
-      const response = await checkUser(credentials);
-      return response.data;
+      const { data } = await getUser(credentials);
+      console.log(data);
+      if (data) {
+        setUsername(data);
+        navigate("/dashboard");
+        return data;
+      } else {
+        return data;
+      }
     } catch (error) {
       console.log("unable to login", error);
+    }
+  };
+
+  const handleSignup = async ({
+    input_email,
+    input_password,
+    input_username,
+  }) => {
+    try {
+      const validations = {};
+      const emailResponse = await uniqueEmail({ input_email });
+      validations.email = emailResponse.data;
+      const usernameResponse = await uniqueUsername({ input_username });
+      validations.username = usernameResponse.data;
+
+      if (validations.email === true && validations.username === true) {
+        const { data } = await insertUser({
+          input_email,
+          input_password,
+          input_username,
+        });
+        if (data === true) {
+          navigate("/login");
+        }
+      }
+      return validations;
+    } catch (error) {
+      console.log("unable to sign up", error);
+      return error;
     }
   };
 
@@ -95,7 +137,8 @@ function App() {
     <>
       <Routes>
         <Route path="/login" element={<Login onSubmit={handleLogin} />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/signup" element={<Signup onSubmit={handleSignup} />} />
+        <Route path="/dashboard" element={<Dashboard username={username} />} />
         <Route path="*" element={<Login onSubmit={handleLogin} />} />
       </Routes>
     </>
