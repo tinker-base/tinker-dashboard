@@ -7,18 +7,17 @@ function classNames(...classes) {
 }
 
 export const SchemaSelect = ({ schemas }) => {
-  console.log(schemas);
   const [selected, setSelected] = useState("public");
 
   return (
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
         <>
-          <Listbox.Label className="block text-xs font-medium leading-6 text-gray-900">
+          <Listbox.Label className="block text-xs font-medium leading-6 text-indigo-200 mt-4">
             Schemas
           </Listbox.Label>
-          <div className="relative mt-2">
-            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 text-xs leading-3">
+          <div className="relative">
+            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-300 text-xs leading-3">
               <span className="block truncate">{selected}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronUpDownIcon
@@ -41,7 +40,7 @@ export const SchemaSelect = ({ schemas }) => {
                     key={schema}
                     className={({ active }) =>
                       classNames(
-                        active ? "bg-indigo-600 text-white" : "text-gray-900",
+                        active ? "bg-indigo-300 text-white" : "text-gray-900",
                         "relative cursor-default select-none py-2 pl-8 pr-4"
                       )
                     }

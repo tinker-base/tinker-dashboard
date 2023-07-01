@@ -1,31 +1,51 @@
 import { SchemaSelect } from "./schema_select";
-import { TableButton } from "./table_button";
 import { Link } from "react-router-dom";
+import { HomeIcon, TableCellsIcon } from "@heroicons/react/24/outline";
 
-export const Tables = ({ schemas, tables, onClick }) => {
+export const Tables = ({ schemas, tables, onTableSelect }) => {
   return (
     <>
-      <Link to={"/"} className="block">
-        <button className="leading-3 rounded-md bg-indigo-400 px-3.5 py-2.5 text-sm font-semibold text-gray-800 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-indigo-200">
-          All Projects
-        </button>
-      </Link>
       {/* <label
         id="listbox-label"
         className="block text-sm font-medium leading-3 text-gray-900 pt-3 pb-1"
       >
         Schemas
       </label> */}
+      <Link
+        to="/dashboard"
+        className="text-indigo-100 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+      >
+        <HomeIcon
+          className={"text-indigo-100 group-hover:text-white h-6 w-6 shrink-0"}
+          aria-hidden="true"
+        />
+        Dashboard
+      </Link>
+      <div className="border-b-2 border-indigo-100 pb-4"></div>
       <SchemaSelect schemas={schemas} />
+      <div className="border-b-2 border-indigo-100 my-6"></div>
       {/* <select className="p-1 border-solid border-2 rounded-sm">
         {schemas.map((schemaTitle) => (
           <option key={schemaTitle}>{schemaTitle}</option>
         ))}
       </select> */}
-      <div className="my-10"></div>
+      <div className="flex gap-x-3 text-white pb-6">
+        <TableCellsIcon
+          className={"text-indigo-200 group-hover:text-white h-6 w-6 shrink-0"}
+          aria-hidden="true"
+        />
+        <p>Tables</p>
+      </div>
       <ul className="flex flex-col gap-y-4">
         {tables.map((tableName) => (
-          <TableButton key={tableName} title={tableName} onClick={onClick} />
+          <li key={tableName} onClick={() => onTableSelect(tableName)}>
+            <Link
+              to={`tables/${tableName}`}
+              className="text-indigo-200 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold active:bg-indigo-700"
+            >
+              {tableName}
+            </Link>
+          </li>
         ))}
       </ul>
     </>
