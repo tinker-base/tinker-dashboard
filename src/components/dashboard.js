@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { Link, Outlet, useParams } from "react-router-dom";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -17,14 +18,20 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router";
+import { Tables } from "./tables";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },
-  { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
+  // { name: "Dashboard", href: "#", icon: HomeIcon, current: false },
+  {
+    name: "Projects",
+    href: "/dashboard/projects",
+    icon: FolderIcon,
+    current: true,
+  },
+  { name: "Users", href: "/dashboard/users", icon: UsersIcon, current: false },
+  // { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
+  // { name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },
+  // { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
 ];
 const teams = [
   { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
@@ -32,7 +39,7 @@ const teams = [
   { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
 ];
 const userNavigation = [
-  { name: "Your profile", href: "#" },
+  { name: "Your profile", href: "/" },
   { name: "Sign out", href: "/login" },
 ];
 
@@ -40,25 +47,91 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const Dashboard = ({ username }) => {
+const SidebarNav = () => {
+  return (
+    <ul role="list" className="flex flex-1 flex-col gap-y-7">
+      <li>
+        <ul role="list" className="-mx-2 space-y-1">
+          {navigation.map((item) => (
+            <li key={item.name}>
+              <Link
+                to={item.href}
+                className={classNames(
+                  item.current
+                    ? "bg-indigo-700 text-white"
+                    : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                )}
+              >
+                <item.icon
+                  className={classNames(
+                    item.current
+                      ? "text-white"
+                      : "text-indigo-200 group-hover:text-white",
+                    "h-6 w-6 shrink-0"
+                  )}
+                  aria-hidden="true"
+                />
+                {item.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </li>
+      <li>
+        <div className="text-xs font-semibold leading-6 text-indigo-200">
+          Your teams
+        </div>
+        <ul role="list" className="-mx-2 mt-2 space-y-1">
+          {teams.map((team) => (
+            <li key={team.name}>
+              <a
+                href={team.href}
+                className={classNames(
+                  team.current
+                    ? "bg-indigo-700 text-white"
+                    : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                )}
+              >
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
+                  {team.initial}
+                </span>
+                <span className="truncate">{team.name}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </li>
+      <li className="mt-auto">
+        <a
+          href="#"
+          className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+        >
+          <Cog6ToothIcon
+            className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
+            aria-hidden="true"
+          />
+          Settings
+        </a>
+      </li>
+    </ul>
+  );
+};
+
+export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { project } = useParams();
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
-            className="relative z-50 lg:hidden"
+            // className={`relative z-50 lg:hidden`}
+            className={`relative z-50 ${project ? "" : "lg:hidden"}`}
             onClose={setSidebarOpen}
           >
             <Transition.Child
@@ -70,10 +143,10 @@ export const Dashboard = ({ username }) => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="fixed inset-0 bg-gray-900/80" />
+              <div className="fixed inset-0 bg-gray-500/50" />
             </Transition.Child>
 
-            <div className="fixed inset-0 flex">
+            <div id="toggling-sidebar-wrapper" className="fixed inset-0 flex">
               <Transition.Child
                 as={Fragment}
                 enter="transition ease-in-out duration-300 transform"
@@ -83,7 +156,7 @@ export const Dashboard = ({ username }) => {
                 leaveFrom="translate-x-0"
                 leaveTo="-translate-x-full"
               >
-                <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1">
+                <Dialog.Panel className="relative flex w-full max-w-xs flex-1">
                   <Transition.Child
                     as={Fragment}
                     enter="ease-in-out duration-300"
@@ -93,7 +166,7 @@ export const Dashboard = ({ username }) => {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
+                    <div className="absolute left-1/2 top-0 flex w-10 justify-center pt-5 ">
                       <button
                         type="button"
                         className="-m-2.5 p-2.5"
@@ -107,14 +180,14 @@ export const Dashboard = ({ username }) => {
                       </button>
                     </div>
                   </Transition.Child>
+
                   {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
+                  <div
+                    id="toggling-sidebar"
+                    className="flex w-48 flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4"
+                  >
                     <div className="flex h-16 shrink-0 items-center">
-                      <img
-                        className="h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=white"
-                        alt="Your Company"
-                      />
+                      <h1 className="text-white text-2xl">TINKER</h1>
                     </div>
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -122,8 +195,8 @@ export const Dashboard = ({ username }) => {
                           <ul role="list" className="-mx-2 space-y-1">
                             {navigation.map((item) => (
                               <li key={item.name}>
-                                <a
-                                  href={item.href}
+                                <Link
+                                  to={item.href}
                                   className={classNames(
                                     item.current
                                       ? "bg-indigo-700 text-white"
@@ -141,7 +214,7 @@ export const Dashboard = ({ username }) => {
                                     aria-hidden="true"
                                   />
                                   {item.name}
-                                </a>
+                                </Link>
                               </li>
                             ))}
                           </ul>
@@ -193,11 +266,20 @@ export const Dashboard = ({ username }) => {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div
+          id="static-sidebar-wrapper"
+          // className={`${
+          // project ? "hidden" : "hidden lg:flex"
+          // } lg:fixed lg:inset-y-0 lg:z-50  lg:w-48 lg:flex-col `}
+          className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-48 lg:flex-col"
+        >
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
+          <div
+            id="static-sidebar"
+            className="flex flex-col h-full gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4"
+          >
             <div className="flex h-16 shrink-0 items-center">
-              <h1 className="text-white text-2xl">Tinker</h1>
+              <h1 className="text-white text-2xl">TINKER</h1>
               {/* <img
                 className="h-8 w-auto"
                 src="https://tailwindui.com/img/logos/mark.svg?color=white"
@@ -205,82 +287,27 @@ export const Dashboard = ({ username }) => {
               /> */}
             </div>
             <nav className="flex flex-1 flex-col">
-              <ul role="list" className="flex flex-1 flex-col gap-y-7">
-                <li>
-                  <ul role="list" className="-mx-2 space-y-1">
-                    {navigation.map((item) => (
-                      <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? "bg-indigo-700 text-white"
-                              : "text-indigo-200 hover:text-white hover:bg-indigo-700",
-                            "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                          )}
-                        >
-                          <item.icon
-                            className={classNames(
-                              item.current
-                                ? "text-white"
-                                : "text-indigo-200 group-hover:text-white",
-                              "h-6 w-6 shrink-0"
-                            )}
-                            aria-hidden="true"
-                          />
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-                <li>
-                  <div className="text-xs font-semibold leading-6 text-indigo-200">
-                    Your teams
-                  </div>
-                  <ul role="list" className="-mx-2 mt-2 space-y-1">
-                    {teams.map((team) => (
-                      <li key={team.name}>
-                        <a
-                          href={team.href}
-                          className={classNames(
-                            team.current
-                              ? "bg-indigo-700 text-white"
-                              : "text-indigo-200 hover:text-white hover:bg-indigo-700",
-                            "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                          )}
-                        >
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
-                            {team.initial}
-                          </span>
-                          <span className="truncate">{team.name}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-                <li className="mt-auto">
-                  <a
-                    href="#"
-                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
-                  >
-                    <Cog6ToothIcon
-                      className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
-                      aria-hidden="true"
-                    />
-                    Settings
-                  </a>
-                </li>
-              </ul>
+              {project ? (
+                <Tables
+                  schemas={schemas}
+                  tables={tables}
+                  onTableSelect={onTableSelect}
+                />
+              ) : (
+                <SidebarNav />
+              )}
             </nav>
           </div>
         </div>
 
-        <div className="lg:pl-72">
+        <div className="lg:pl-48">
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
             <button
               type="button"
-              className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+              className={`-m-2.5 p-2.5 text-gray-700 ${
+                project ? "" : "hidden"
+              }`}
+              // className={`-m-2.5 p-2.5 text-gray-700 lg:hidden`}
               onClick={() => setSidebarOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
@@ -294,22 +321,7 @@ export const Dashboard = ({ username }) => {
             />
 
             <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              <form className="relative flex flex-1" action="#" method="GET">
-                <label htmlFor="search-field" className="sr-only">
-                  Search
-                </label>
-                <MagnifyingGlassIcon
-                  className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-                <input
-                  id="search-field"
-                  className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                  placeholder="Search..."
-                  type="search"
-                  name="search"
-                />
-              </form>
+              <div className="relative flex flex-1"></div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <button
                   type="button"
@@ -380,7 +392,7 @@ export const Dashboard = ({ username }) => {
           </div>
 
           <main className="py-10">
-            <div className="px-4 sm:px-6 lg:px-8">{/* Your content */}</div>
+            <div className="px-4">{<Outlet />}</div>
           </main>
         </div>
       </div>

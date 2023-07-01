@@ -10,14 +10,13 @@ import {
   insertUser,
   uniqueUsername,
 } from "./services/services";
-// import { TableEditor } from "./components/table_editor";
-import { Tables } from "./components/tables";
 import { Rows } from "./components/rows";
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { Projects } from "./components/projects";
 import { Dashboard } from "./components/dashboard";
 import { Login } from "./components/login";
 import { Signup } from "./components/signup";
+import { PageNotFound } from "./components/page_not_found";
 
 function App() {
   const navigate = useNavigate();
@@ -91,7 +90,6 @@ function App() {
   const handleLogin = async (credentials) => {
     try {
       const { data } = await getUser(credentials);
-      console.log(data);
       if (data) {
         setUsername(data);
         navigate("/dashboard");
@@ -136,10 +134,47 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/login" element={<Login onSubmit={handleLogin} />} />
-        <Route path="/signup" element={<Signup onSubmit={handleSignup} />} />
-        <Route path="/dashboard" element={<Dashboard username={username} />} />
-        <Route path="*" element={<Login onSubmit={handleLogin} />} />
+        <Route index element={<Login onSubmit={handleLogin} />} />
+        <Route path="login" element={<Login onSubmit={handleLogin} />} />
+        <Route path="signup" element={<Signup onSubmit={handleSignup} />} />
+        <Route path="dashboard" element={<Dashboard username={username} />}>
+          <Route
+            index
+            element={
+              <Projects
+                projects={projects}
+                onSelectProject={handleProjectSelect}
+                onNewProject={handleCreateNewProject}
+              />
+            }
+          />
+          <Route
+            path="projects"
+            element={
+              <Projects
+                projects={projects}
+                onSelectProject={handleProjectSelect}
+                onNewProject={handleCreateNewProject}
+              />
+            }
+          />
+          <Route path="users" element={<h1>Users List</h1>} />
+        </Route>
+        <Route
+          path="dashboard/projects/:project"
+          element={
+            <Dashboard
+              username={username}
+              schemas={schemas}
+              tables={tables}
+              onTableSelect={getTableRows}
+            />
+          }
+        >
+          <Route path="tables/:table" element={<Rows rows={rows} />} />
+        </Route>
+
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>
     // <div className="p-4 h-screen w-screen fixed">
@@ -158,9 +193,9 @@ function App() {
     //             path="/"
     //             element={
     //               <Projects
-    //                 projects={projects}
-    //                 onSelectProject={handleProjectSelect}
-    //                 onNewProject={handleCreateNewProject}
+    // projects={projects}
+    // onSelectProject={handleProjectSelect}
+    // onNewProject={handleCreateNewProject}
     //               />
     //             }
     //           />
