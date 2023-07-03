@@ -47,33 +47,36 @@ export const getUser = async (credentials) => {
   }
 };
 
-export const uniqueEmail = async (email) => {
+export const uniqueEmail = async (email, jwt) => {
   try {
     return await axios.post(
       "http://ec2-3-137-184-88.us-east-2.compute.amazonaws.com:3000/rpc/unique_user_email",
-      email
+      email,
+      { headers: { Authorization: `Bearer ${jwt}` } }
     );
   } catch (error) {
     return error.response;
   }
 };
 
-export const uniqueUsername = async (username) => {
+export const uniqueUsername = async (username, jwt) => {
   try {
     return await axios.post(
       "http://ec2-3-137-184-88.us-east-2.compute.amazonaws.com:3000/rpc/unique_username",
-      username
+      username,
+      { headers: { Authorization: `Bearer ${jwt}` } }
     );
   } catch (error) {
     return error.response;
   }
 };
 
-export const insertUser = async (credentials) => {
+export const insertUser = async (credentials, jwt) => {
   try {
     return await axios.post(
       "http://ec2-3-137-184-88.us-east-2.compute.amazonaws.com:3000/rpc/insert_user",
-      credentials
+      credentials,
+      { headers: { Authorization: `Bearer ${jwt}` } }
     );
   } catch (error) {
     return error.response;

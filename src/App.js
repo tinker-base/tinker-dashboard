@@ -1,5 +1,6 @@
 import "./App.css";
 import React from "react";
+import JWT from "jsonwebtoken";
 import {
   getRows,
   getAllSchemas,
@@ -21,6 +22,7 @@ import { PageNotFound } from "./components/page_not_found";
 function App() {
   const navigate = useNavigate();
   const [username, setUsername] = React.useState("");
+  const [jwt, setJWT] = React.useState();
   const [projects, setProjects] = React.useState([]);
   const [projectURL, setProjectURL] = React.useState("");
   const [tables, setTables] = React.useState([]);
@@ -106,20 +108,25 @@ function App() {
     input_email,
     input_password,
     input_username,
+    jwtSecret,
   }) => {
+    const jwt = JWT.sign({ role: "admin" }, jwtSecret);
     try {
       const validations = {};
-      const emailResponse = await uniqueEmail({ input_email });
+      const emailResponse = await uniqueEmail({ input_email }, jwt);
       validations.email = emailResponse.data;
-      const usernameResponse = await uniqueUsername({ input_username });
+      const usernameResponse = await uniqueUsername({ input_username }, jwt);
       validations.username = usernameResponse.data;
 
       if (validations.email === true && validations.username === true) {
-        const { data } = await insertUser({
-          input_email,
-          input_password,
-          input_username,
-        });
+        const { data } = await insertUser(
+          {
+            input_email,
+            input_password,
+            input_username,
+          },
+          jwt
+        );
         if (data === true) {
           navigate("/login");
         }
