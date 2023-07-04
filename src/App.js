@@ -1,5 +1,6 @@
 import "./App.css";
 import React from "react";
+import * as jose from "jose";
 import {
   getRows,
   getAllSchemas,
@@ -9,6 +10,8 @@ import {
   uniqueEmail,
   insertUser,
   uniqueUsername,
+  login,
+  getUsername,
 } from "./services/services";
 import { Rows } from "./components/rows";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -21,6 +24,7 @@ import { PageNotFound } from "./components/page_not_found";
 function App() {
   const navigate = useNavigate();
   const [username, setUsername] = React.useState("");
+  const [jwt, setJWT] = React.useState();
   const [projects, setProjects] = React.useState([]);
   const [projectURL, setProjectURL] = React.useState("");
   const [tables, setTables] = React.useState([]);
@@ -30,7 +34,7 @@ function App() {
   React.useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await getProjects();
+        const response = await getProjects(jwt);
         setProjects(response.data);
       } catch (error) {
         console.log("unable to fetch projects", error);
@@ -41,7 +45,7 @@ function App() {
 
   const getTables = async (schema) => {
     try {
-      const response = await getAllTablesInSchema(projectURL, schema);
+      const response = await getAllTablesInSchema(projectURL, schema, jwt);
       setTables(response.data.map((tableObj) => tableObj.table_name));
     } catch (error) {
       console.log("Unable to fetch tables", error);
@@ -50,7 +54,7 @@ function App() {
 
   const getSchemas = async () => {
     try {
-      const response = await getAllSchemas(projectURL);
+      const response = await getAllSchemas(projectURL, jwt);
       setSchemas(
         response.data
           .filter((schemaObj) => {
@@ -70,7 +74,7 @@ function App() {
 
   const getTableRows = async (tableTitle) => {
     try {
-      const response = await getRows(projectURL, tableTitle);
+      const response = await getRows(projectURL, tableTitle, jwt);
       setRows(response.data);
     } catch (error) {
       console.log("unable to get rows from table");
@@ -89,9 +93,12 @@ function App() {
 
   const handleLogin = async (credentials) => {
     try {
-      const { data } = await getUser(credentials);
+      const { data } = await login(credentials);
       if (data) {
-        setUsername(data);
+        await setJWT(data.token);
+        console.log(jwt);
+        const response = await getUsername(credentials, jwt);
+        setUsername(response.data);
         navigate("/dashboard");
         return data;
       } else {
@@ -103,23 +110,37 @@ function App() {
   };
 
   const handleSignup = async ({
-    input_email,
-    input_password,
-    input_username,
+    email,
+    password,
+    username,
+    jwtSecret,
+    role,
   }) => {
+    const secret = new TextEncoder().encode(jwtSecret);
+
+    const alg = "HS256";
+
+    const jwt = await new jose.SignJWT({ role: "admin" })
+      .setProtectedHeader({ alg })
+      .sign(secret);
+
     try {
       const validations = {};
-      const emailResponse = await uniqueEmail({ input_email });
+      const emailResponse = await uniqueEmail({ email }, jwt);
       validations.email = emailResponse.data;
-      const usernameResponse = await uniqueUsername({ input_username });
+      const usernameResponse = await uniqueUsername({ username }, jwt);
       validations.username = usernameResponse.data;
 
       if (validations.email === true && validations.username === true) {
-        const { data } = await insertUser({
-          input_email,
-          input_password,
-          input_username,
-        });
+        const { data } = await insertUser(
+          {
+            email,
+            password,
+            username,
+            role,
+          },
+          jwt
+        );
         if (data === true) {
           navigate("/login");
         }
@@ -135,7 +156,10 @@ function App() {
     <>
       <Routes>
         <Route index element={<Login onSubmit={handleLogin} />} />
-        <Route path="login" element={<Login onSubmit={handleLogin} />} />
+        <Route
+          path="login"
+          element={<Login onSubmit={handleLogin} setJWT={setJWT} />}
+        />
         <Route path="signup" element={<Signup onSubmit={handleSignup} />} />
         <Route path="dashboard" element={<Dashboard username={username} />}>
           <Route

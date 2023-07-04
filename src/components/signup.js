@@ -7,6 +7,7 @@ export const Signup = ({ onSubmit }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [rePassword, setRePassword] = React.useState("");
+  const [jwtSecret, setJWTSecret] = React.useState("");
   const [validCredentials, setValidCredentials] = React.useState({
     email: null,
     username: null,
@@ -15,6 +16,7 @@ export const Signup = ({ onSubmit }) => {
   const [emailBlur, setEmailBlur] = React.useState(false);
   const [passwordBlur, setPasswordBlur] = React.useState(false);
   const [rePasswordBlur, setRePasswordBlur] = React.useState(false);
+  const [jwtSecretBlur, setJWTSecretBlur] = React.useState(false);
 
   const inputsFilled = () => {
     return (
@@ -33,6 +35,7 @@ export const Signup = ({ onSubmit }) => {
     setEmailBlur(false);
     setPasswordBlur(false);
     setRePasswordBlur(false);
+    setJWTSecretBlur(false);
     setValidCredentials(null);
   };
 
@@ -90,9 +93,11 @@ export const Signup = ({ onSubmit }) => {
                 if (inputsFilled()) {
                   try {
                     const validations = await onSubmit({
-                      input_email: email.toLowerCase(),
-                      input_password: password,
-                      input_username: username,
+                      email: email.toLowerCase(),
+                      password,
+                      username,
+                      jwtSecret,
+                      role: "admin",
                     });
                     setValidCredentials(validations);
                   } catch (error) {
@@ -206,6 +211,33 @@ export const Signup = ({ onSubmit }) => {
                         Password cannot be empty
                       </span>
                     )
+                  ) : (
+                    <span className="opacity-0">hidden</span>
+                  )}
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="jwtSecret"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  JWT Secret
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="jwtSecret"
+                    name="jwtSecret"
+                    type="text"
+                    autocomplete="off"
+                    value={jwtSecret}
+                    onChange={(e) => setJWTSecret(e.target.value)}
+                    onBlur={() => setJWTSecretBlur(true)}
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                  {jwtSecret.length === 0 && jwtSecretBlur ? (
+                    <span className="text-red-600 text-xs">
+                      JWT Secret cannot be empty
+                    </span>
                   ) : (
                     <span className="opacity-0">hidden</span>
                   )}
