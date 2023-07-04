@@ -1,9 +1,9 @@
 const { CloudFormation } = require("@aws-sdk/client-cloudformation");
 const fs = require("fs");
 
-const templatePath = "./tinker_add_project_CF.json";
+const templatePath = "./new_project_CF.json";
 
-export const createProject = (projectName) => {
+const createProject = (projectName) => {
   const cloudformation = new CloudFormation();
 
   fs.readFile(templatePath, "utf8", (err, template) => {
@@ -28,3 +28,5 @@ export const createProject = (projectName) => {
     });
   });
 };
+
+createProject("Lucaaaaa");
