@@ -6,7 +6,6 @@ import {
   getAllSchemas,
   getAllTablesInSchema,
   getProjects,
-  getUser,
   uniqueEmail,
   insertUser,
   uniqueUsername,
@@ -31,17 +30,14 @@ function App() {
   const [schemas, setSchemas] = React.useState([]);
   const [rows, setRows] = React.useState([]);
 
-  React.useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await getProjects(jwt);
-        setProjects(response.data);
-      } catch (error) {
-        console.log("unable to fetch projects", error);
-      }
-    };
-    fetchProjects();
-  }, []);
+  const fetchProjects = async (token = jwt) => {
+    try {
+      const response = await getProjects(token);
+      setProjects(response.data);
+    } catch (error) {
+      console.log("unable to fetch projects", error);
+    }
+  };
 
   const getTables = async (schema) => {
     try {
@@ -97,8 +93,9 @@ function App() {
       if (data) {
         await setJWT(data.token);
         console.log(jwt);
-        const response = await getUsername(credentials, jwt);
+        const response = await getUsername(credentials, data.token);
         setUsername(response.data);
+        fetchProjects(data.token);
         navigate("/dashboard");
         return data;
       } else {
