@@ -1,45 +1,51 @@
 import axios from "axios";
 
-export const getProjects = async () => {
+export const getProjects = async (jwt) => {
   try {
     return await axios.get(
-      `http://ec2-3-137-184-88.us-east-2.compute.amazonaws.com:3000/project`
+      `http://ec2-3-137-184-88.us-east-2.compute.amazonaws.com:3000/project`,
+      { headers: { Authorization: `Bearer ${jwt}` } }
     );
   } catch (error) {
     return error.response;
   }
 };
 
-export const getRows = async (url, table) => {
+export const getRows = async (url, table, jwt) => {
   try {
-    return await axios.get(`http://${url}:3000/${table}`);
+    return await axios.get(`http://${url}:3000/${table}`, {
+      headers: { Authorization: `Bearer ${jwt}` },
+    });
   } catch (error) {
     return error.response;
   }
 };
 
-export const getAllTablesInSchema = async (url, schemaName = "public") => {
+export const getAllTablesInSchema = async (url, schemaName = "public", jwt) => {
   try {
     return await axios.get(
-      `http://${url}:3000/rpc/tables_in_schema?schema=${schemaName}`
+      `http://${url}:3000/rpc/tables_in_schema?schema=${schemaName}`,
+      { headers: { Authorization: `Bearer ${jwt}` } }
     );
   } catch (error) {
     return error.response;
   }
 };
 
-export const getAllSchemas = async (url) => {
+export const getAllSchemas = async (url, jwt) => {
   try {
-    return await axios.get(`http://${url}:3000/rpc/all_schemas`);
+    return await axios.get(`http://${url}:3000/rpc/all_schemas`, {
+      headers: { Authorization: `Bearer ${jwt}` },
+    });
   } catch (error) {
     return error.response;
   }
 };
 
-export const getUser = async (credentials) => {
+export const login = async (credentials) => {
   try {
     return await axios.post(
-      "http://ec2-3-137-184-88.us-east-2.compute.amazonaws.com:3000/rpc/get_user",
+      "http://ec2-3-137-184-88.us-east-2.compute.amazonaws.com:3000/rpc/login",
       credentials
     );
   } catch (error) {
@@ -81,4 +87,14 @@ export const insertUser = async (credentials, jwt) => {
   } catch (error) {
     return error.response;
   }
+};
+
+export const getUsername = async (credentials, jwt) => {
+  try {
+    return await axios.post(
+      "http://ec2-3-137-184-88.us-east-2.compute.amazonaws.com:3000/rpc/get_username",
+      credentials,
+      { headers: { Authorization: `Bearer ${jwt}` } }
+    );
+  } catch (error) {}
 };

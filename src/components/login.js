@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import validator from "validator";
 
-export const Login = ({ onSubmit }) => {
+export const Login = ({ onSubmit, setJWT }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [validCredentials, setValidCredentials] = React.useState(null);
@@ -61,8 +61,8 @@ export const Login = ({ onSubmit }) => {
                 if (inputsFilled()) {
                   try {
                     const validation = await onSubmit({
-                      input_email: email.toLowerCase(),
-                      input_password: password,
+                      email: email.toLowerCase(),
+                      password: password,
                     });
                     setValidCredentials(!!validation);
                   } catch (error) {

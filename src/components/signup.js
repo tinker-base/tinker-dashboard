@@ -93,10 +93,11 @@ export const Signup = ({ onSubmit }) => {
                 if (inputsFilled()) {
                   try {
                     const validations = await onSubmit({
-                      input_email: email.toLowerCase(),
-                      input_password: password,
-                      input_username: username,
+                      email: email.toLowerCase(),
+                      password,
+                      username,
                       jwtSecret,
+                      role: "admin",
                     });
                     setValidCredentials(validations);
                   } catch (error) {
@@ -220,13 +221,14 @@ export const Signup = ({ onSubmit }) => {
                   htmlFor="jwtSecret"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  Confirm Password
+                  JWT Secret
                 </label>
                 <div className="mt-2">
                   <input
                     id="jwtSecret"
                     name="jwtSecret"
                     type="text"
+                    autocomplete="off"
                     value={jwtSecret}
                     onChange={(e) => setJWTSecret(e.target.value)}
                     onBlur={() => setJWTSecretBlur(true)}
