@@ -21,15 +21,6 @@ services:
       - postgrest-backend
     restart: always
 
-  swagger:
-    image: swaggerapi/swagger-ui
-    ports:
-      - "8080:8080"
-    expose:
-      - "8080"
-    environment:
-      API_URL: http://localhost:3000/
-
   ##################
   # postgrest-demo #
   ##################
@@ -48,13 +39,13 @@ services:
   #############
   postgrest:
     container_name: postgrest
-    image: postgrest/postgrest:latest
+    image: postgrest/postgrest
     ports:
       - "3000:3000"
     # Available environment variables documented here:
     # https://postgrest.org/en/latest/configuration.html#environment-variables
     environment:
-      PGRST_DB_URI: postgres://tinker:password@db:5432/tinker
+      PGRST_DB_URI: postgres://tinker:tinker@postgrest-db:5432/tinker
       PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
       PGRST_DB_SCHEMA: public
       PGRST_DB_ANON_ROLE: tinker
