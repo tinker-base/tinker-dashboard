@@ -12,11 +12,15 @@ export const Signup = ({ onSubmit }) => {
     email: null,
     username: null,
   });
-  const [usernameBlur, setUsernameBlur] = React.useState(false);
-  const [emailBlur, setEmailBlur] = React.useState(false);
-  const [passwordBlur, setPasswordBlur] = React.useState(false);
-  const [rePasswordBlur, setRePasswordBlur] = React.useState(false);
-  const [jwtSecretBlur, setJWTSecretBlur] = React.useState(false);
+  const [blurs, setBlurs] = React.useState(() => {
+    return {
+      username: false,
+      email: false,
+      password: false,
+      rePassword: false,
+      jwtSecret: false,
+    };
+  });
 
   const inputsFilled = () => {
     return (
@@ -31,16 +35,21 @@ export const Signup = ({ onSubmit }) => {
     setEmail("");
     setPassword("");
     setRePassword("");
-    setUsernameBlur(false);
-    setEmailBlur(false);
-    setPasswordBlur(false);
-    setRePasswordBlur(false);
-    setJWTSecretBlur(false);
+    setBlurs({
+      username: false,
+      email: false,
+      password: false,
+      rePassword: false,
+      jwtSecret: false,
+    });
     setValidCredentials(null);
   };
 
+  // popup error message below the email input field
+
   const EmailErrorMessage = () => {
-    if (emailBlur) {
+    console.log(blurs);
+    if (blurs.email) {
       if (validator.isEmail(email) === false) {
         return (
           <span className="text-red-600 text-xs">Please enter valid email</span>
@@ -54,8 +63,11 @@ export const Signup = ({ onSubmit }) => {
     return <span className="opacity-0">hidden</span>;
   };
 
+  // popup error message below the username input field
+
   const UsernameErrorMessage = () => {
-    if (usernameBlur) {
+    console.log(blurs);
+    if (blurs.username) {
       if (username.length === 0) {
         return (
           <span className="text-red-600 text-xs">Username cannot be empty</span>
@@ -104,8 +116,9 @@ export const Signup = ({ onSubmit }) => {
                     console.log(error);
                   }
                 } else {
-                  setEmailBlur(true);
-                  setPasswordBlur(true);
+                  setBlurs((blurs) => {
+                    return { ...blurs, email: true, password: true };
+                  });
                 }
                 if (
                   validCredentials.email === true &&
@@ -129,7 +142,11 @@ export const Signup = ({ onSubmit }) => {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    onBlur={() => setUsernameBlur(true)}
+                    onBlur={() =>
+                      setBlurs((blurs) => {
+                        return { ...blurs, username: true };
+                      })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -150,7 +167,11 @@ export const Signup = ({ onSubmit }) => {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    onBlur={() => setEmailBlur(true)}
+                    onBlur={() =>
+                      setBlurs((blurs) => {
+                        return { ...blurs, email: true };
+                      })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                   <EmailErrorMessage />
@@ -171,10 +192,14 @@ export const Signup = ({ onSubmit }) => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    onBlur={() => setPasswordBlur(true)}
+                    onBlur={() =>
+                      setBlurs((blurs) => {
+                        return { ...blurs, password: true };
+                      })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
-                  {password.length === 0 && passwordBlur ? (
+                  {password.length === 0 && blurs.password ? (
                     <span className="text-red-600 text-xs">
                       Password cannot be empty
                     </span>
@@ -197,11 +222,15 @@ export const Signup = ({ onSubmit }) => {
                     type="password"
                     value={rePassword}
                     onChange={(e) => setRePassword(e.target.value)}
-                    onBlur={() => setRePasswordBlur(true)}
+                    onBlur={() =>
+                      setBlurs((blurs) => {
+                        return { ...blurs, rePassword: true };
+                      })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                   {password !== rePassword ||
-                  (rePassword.length === 0 && rePasswordBlur) ? (
+                  (rePassword.length === 0 && blurs.rePassword) ? (
                     password !== rePassword ? (
                       <span className="text-red-600 text-xs">
                         Passwords do not match
@@ -231,10 +260,14 @@ export const Signup = ({ onSubmit }) => {
                     autoComplete="off"
                     value={jwtSecret}
                     onChange={(e) => setJWTSecret(e.target.value)}
-                    onBlur={() => setJWTSecretBlur(true)}
+                    onBlur={() =>
+                      setBlurs((blurs) => {
+                        return { ...blurs, jwtSecret: true };
+                      })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
-                  {jwtSecret.length === 0 && jwtSecretBlur ? (
+                  {jwtSecret.length === 0 && blurs.jwtSecret ? (
                     <span className="text-red-600 text-xs">
                       JWT Secret cannot be empty
                     </span>
