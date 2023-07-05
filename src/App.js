@@ -39,18 +39,18 @@ function App() {
     }
   };
 
-  const getTables = async (schema) => {
+  const getTables = async (url, schema = "public") => {
     try {
-      const response = await getAllTablesInSchema(projectURL, schema, jwt);
+      const response = await getAllTablesInSchema(url, schema, jwt);
       setTables(response.data.map((tableObj) => tableObj.table_name));
     } catch (error) {
       console.log("Unable to fetch tables", error);
     }
   };
 
-  const getSchemas = async () => {
+  const getSchemas = async (url) => {
     try {
-      const response = await getAllSchemas(projectURL, jwt);
+      const response = await getAllSchemas(url, jwt);
       setSchemas(
         response.data
           .filter((schemaObj) => {
@@ -79,8 +79,8 @@ function App() {
 
   const handleProjectSelect = (project) => {
     setProjectURL(project.ip);
-    getSchemas(projectURL);
-    getTables();
+    getSchemas(project.ip);
+    getTables(project.ip);
   };
 
   const handleCreateNewProject = () => {
@@ -91,8 +91,7 @@ function App() {
     try {
       const { data } = await login(credentials);
       if (data) {
-        await setJWT(data.token);
-        console.log(jwt);
+        setJWT(data.token);
         const response = await getUsername(credentials, data.token);
         setUsername(response.data);
         fetchProjects(data.token);

@@ -228,7 +228,7 @@ export const Signup = ({ onSubmit }) => {
                     id="jwtSecret"
                     name="jwtSecret"
                     type="text"
-                    autocomplete="off"
+                    autoComplete="off"
                     value={jwtSecret}
                     onChange={(e) => setJWTSecret(e.target.value)}
                     onBlur={() => setJWTSecretBlur(true)}
