@@ -12,7 +12,7 @@ import {
   login,
   getUsername,
 } from "./services/services";
-import { Rows } from "./components/rows";
+import { TableEditor } from "./components/table_editor";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Projects } from "./components/projects";
 import { Dashboard } from "./components/dashboard";
@@ -30,6 +30,8 @@ function App() {
   const [schemas, setSchemas] = React.useState([]);
   const [rows, setRows] = React.useState([]);
 
+  // grabs all the projects in the admin db to be displayed in the dashboard upon login.
+
   const fetchProjects = async (token = jwt) => {
     try {
       const response = await getProjects(token);
@@ -39,6 +41,7 @@ function App() {
     }
   };
 
+  // gets all the tables in the selected schema (public by default) to be displayed in the dashboard
   const getTables = async (url, schema = "public") => {
     try {
       const response = await getAllTablesInSchema(url, schema, jwt);
@@ -47,6 +50,8 @@ function App() {
       console.log("Unable to fetch tables", error);
     }
   };
+
+  // gets all the schemas to be displayed in the select options when a project is selected
 
   const getSchemas = async (url) => {
     try {
@@ -68,6 +73,8 @@ function App() {
     }
   };
 
+  // gets all the rows in the selected table (no pagination currently) to be displayed in the table editor
+
   const getTableRows = async (tableTitle) => {
     try {
       const response = await getRows(projectURL, tableTitle, jwt);
@@ -76,6 +83,11 @@ function App() {
       console.log("unable to get rows from table");
     }
   };
+
+  // method called when a user selects a project in the dashboard
+  // the project URL is set in state
+  // grabs all the available schemas in the selected project
+  // grabs all the tables in the default schema, 'public'
 
   const handleProjectSelect = (project) => {
     setProjectURL(project.ip);
@@ -86,6 +98,9 @@ function App() {
   const handleCreateNewProject = () => {
     //
   };
+
+  // handling user login return login response data to handle input error on the form.
+  // also grabs and stores in state the username if login successful
 
   const handleLogin = async (credentials) => {
     try {
@@ -105,6 +120,11 @@ function App() {
     }
   };
 
+  // handling new user signup
+  // takes the given secret and creates a JWT and to authenticate the user
+  // checks username and email are unique
+  // assigns the signup user as an admin role in PostgreSQL
+
   const handleSignup = async ({
     email,
     password,
@@ -112,15 +132,20 @@ function App() {
     jwtSecret,
     role,
   }) => {
+    // jose package is used to create a JWT
     const secret = new TextEncoder().encode(jwtSecret);
 
     const alg = "HS256";
 
+    // the role of the signed up user is set here
     const jwt = await new jose.SignJWT({ role: "admin" })
       .setProtectedHeader({ alg })
       .sign(secret);
 
     try {
+      // the signing up users entered email and username are checked for uniqueness
+      // before inserting the new user into the users table
+
       const validations = {};
       const emailResponse = await uniqueEmail({ email }, jwt);
       validations.email = emailResponse.data;
@@ -191,52 +216,12 @@ function App() {
             />
           }
         >
-          <Route path="tables/:table" element={<Rows rows={rows} />} />
+          <Route path="tables/:table" element={<TableEditor rows={rows} />} />
         </Route>
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>
-    // <div className="p-4 h-screen w-screen fixed">
-    //   <div className="font-sans h-full px-2 border-solid rounded-sm border-2 border-indigo-800 shadow-lg shadow-indigo-400">
-    //     <header className="border-b-2 py-2 border-indigo-200">
-    //       <Link to="/" className="w-min">
-    //         <span className="font-semibold text-3xl text-indigo-800 ">
-    //           Tinker
-    //         </span>
-    //       </Link>
-    //     </header>
-    //     <div className="flex h-5/6">
-    //       <aside className="p-3 border-r-2 border-indigo-200 w-40">
-    //         <Routes>
-    //           <Route
-    //             path="/"
-    //             element={
-    //               <Projects
-    // projects={projects}
-    // onSelectProject={handleProjectSelect}
-    // onNewProject={handleCreateNewProject}
-    //               />
-    //             }
-    //           />
-    //           <Route
-    //             path="/projects/:project"
-    //             element={
-    //               <Tables
-    //                 schemas={schemas}
-    //                 tables={tables}
-    //                 onClick={getTableRows}
-    //               />
-    //             }
-    //           />
-    //         </Routes>
-    //       </aside>
-    //       <Routes>
-    //         <Route path="/projects/:project" element={<Rows rows={rows} />} />
-    //       </Routes>
-    //     </div>
-    //   </div>
-    // </div>
   );
 }
 

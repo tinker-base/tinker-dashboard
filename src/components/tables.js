@@ -5,12 +5,6 @@ import { HomeIcon, TableCellsIcon } from "@heroicons/react/24/outline";
 export const Tables = ({ schemas, tables, onTableSelect }) => {
   return (
     <>
-      {/* <label
-        id="listbox-label"
-        className="block text-sm font-medium leading-3 text-gray-900 pt-3 pb-1"
-      >
-        Schemas
-      </label> */}
       <Link
         to="/dashboard"
         className="text-indigo-100 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -24,11 +18,7 @@ export const Tables = ({ schemas, tables, onTableSelect }) => {
       <div className="border-b-2 border-indigo-100 pb-4"></div>
       <SchemaSelect schemas={schemas} />
       <div className="border-b-2 border-indigo-100 my-6"></div>
-      {/* <select className="p-1 border-solid border-2 rounded-sm">
-        {schemas.map((schemaTitle) => (
-          <option key={schemaTitle}>{schemaTitle}</option>
-        ))}
-      </select> */}
+
       <div className="flex gap-x-3 text-white pb-6">
         <TableCellsIcon
           className={"text-indigo-200 group-hover:text-white h-6 w-6 shrink-0"}
