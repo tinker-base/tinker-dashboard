@@ -48,7 +48,6 @@ export const Signup = ({ onSubmit }) => {
   // popup error message below the email input field
 
   const EmailErrorMessage = () => {
-    console.log(blurs);
     if (blurs.email) {
       if (validator.isEmail(email) === false) {
         return (
@@ -66,7 +65,6 @@ export const Signup = ({ onSubmit }) => {
   // popup error message below the username input field
 
   const UsernameErrorMessage = () => {
-    console.log(blurs);
     if (blurs.username) {
       if (username.length === 0) {
         return (
