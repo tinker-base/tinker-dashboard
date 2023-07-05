@@ -12,7 +12,7 @@ import {
   login,
   getUsername,
 } from "./services/services";
-import { Rows } from "./components/rows";
+import { TableEditor } from "./components/table_editor";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Projects } from "./components/projects";
 import { Dashboard } from "./components/dashboard";
@@ -87,6 +87,9 @@ function App() {
     //
   };
 
+  // handling user login return login response data to handle input error on the form.
+  // also grabs the username if login successful
+
   const handleLogin = async (credentials) => {
     try {
       const { data } = await login(credentials);
@@ -104,6 +107,8 @@ function App() {
       console.log("unable to login", error);
     }
   };
+
+  // handling new user signup
 
   const handleSignup = async ({
     email,
@@ -191,52 +196,12 @@ function App() {
             />
           }
         >
-          <Route path="tables/:table" element={<Rows rows={rows} />} />
+          <Route path="tables/:table" element={<TableEditor rows={rows} />} />
         </Route>
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>
-    // <div className="p-4 h-screen w-screen fixed">
-    //   <div className="font-sans h-full px-2 border-solid rounded-sm border-2 border-indigo-800 shadow-lg shadow-indigo-400">
-    //     <header className="border-b-2 py-2 border-indigo-200">
-    //       <Link to="/" className="w-min">
-    //         <span className="font-semibold text-3xl text-indigo-800 ">
-    //           Tinker
-    //         </span>
-    //       </Link>
-    //     </header>
-    //     <div className="flex h-5/6">
-    //       <aside className="p-3 border-r-2 border-indigo-200 w-40">
-    //         <Routes>
-    //           <Route
-    //             path="/"
-    //             element={
-    //               <Projects
-    // projects={projects}
-    // onSelectProject={handleProjectSelect}
-    // onNewProject={handleCreateNewProject}
-    //               />
-    //             }
-    //           />
-    //           <Route
-    //             path="/projects/:project"
-    //             element={
-    //               <Tables
-    //                 schemas={schemas}
-    //                 tables={tables}
-    //                 onClick={getTableRows}
-    //               />
-    //             }
-    //           />
-    //         </Routes>
-    //       </aside>
-    //       <Routes>
-    //         <Route path="/projects/:project" element={<Rows rows={rows} />} />
-    //       </Routes>
-    //     </div>
-    //   </div>
-    // </div>
   );
 }
 
