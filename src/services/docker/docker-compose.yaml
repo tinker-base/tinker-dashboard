@@ -1,31 +1,58 @@
-version: "3"
 services:
-  server:
-    image: postgrest/postgrest
-    ports:
-      - "3000:3000"
-    environment:
-      PGRST_DB_URI: postgres://tinker:password@db:5432/tinker
-      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
-      PGRST_DB_SCHEMA: public
-      PGRST_DB_ANON_ROLE: tinker
-    depends_on:
-      - db
-  db:
+  ################
+  # postgrest-db #
+  ################
+  postgrest-db:
+    container_name: postgrest-db
     image: lu19ca78/pgjwt:15-alpine
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: tinker
-      POSTGRES_USER: tinker
-      POSTGRES_PASSWORD: password
+      - POSTGRES_USER=tinker
+      - POSTGRES_PASSWORD=tinker
+      - POSTGRES_DB=tinker
+      - DB_ANON_ROLE=anon
+      - DB_SCHEMA=public
     volumes:
-      - ./init:/docker-entrypoint-initdb.d
-  swagger:
-    image: swaggerapi/swagger-ui
+      # anything in initdb directory is created in the database
+      # see "How to extend this image" section at https://hub.docker.com/r/_/postgres/
+      - "./init:/docker-entrypoint-initdb.d"
+    networks:
+      - postgrest-backend
+    restart: always
+
+  ##################
+  # postgrest-demo #
+  ##################
+  postgrest-demo:
+    container_name: postgrest-demo
+    image: nginx:mainline-alpine
     ports:
-      - "8080:8080"
-    expose:
-      - "8080"
+      - "80:80"
+    volumes:
+      # anything in html directory is hosted via nginx
+      - "./build:/usr/share/nginx/html"
+    restart: always
+
+  #############
+  # postgrest #
+  #############
+  postgrest:
+    container_name: postgrest
+    image: postgrest/postgrest
+    ports:
+      - "3000:3000"
+    # Available environment variables documented here:
+    # https://postgrest.org/en/latest/configuration.html#environment-variables
     environment:
-      API_URL: http://localhost:3000/
+      PGRST_DB_URI: postgres://tinker:tinker@postgrest-db:5432/tinker
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: tinker
+    networks:
+      - postgrest-backend
+    restart: always
+
+networks:
+  postgrest-backend:
+    driver: bridge
