@@ -82,7 +82,7 @@ export const Signup = ({ onSubmit }) => {
   };
 
   return (
-    <div className=" bg-indigo-500 h-screen w-screen flex justify-center ali">
+    <div className=" bg-indigo-500 h-screen w-screen flex justify-center">
       <div className="  flex flex-1 flex-col justify-center  sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           {/* <img
@@ -96,7 +96,7 @@ export const Signup = ({ onSubmit }) => {
         </div>
 
         <div className="m-6 sm:mx-auto sm:w-full sm:max-w-[480px]">
-          <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+          <div className=" bg-white px-4 py-8 shadow sm:rounded-lg sm:px-12">
             <form
               onSubmit={async (e) => {
                 e.preventDefault();

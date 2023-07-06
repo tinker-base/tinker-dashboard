@@ -19,6 +19,7 @@ import { Dashboard } from "./components/dashboard";
 import { Login } from "./components/login";
 import { Signup } from "./components/signup";
 import { PageNotFound } from "./components/page_not_found";
+import { createProject } from "./services/create_project";
 
 function App() {
   const navigate = useNavigate();
@@ -95,8 +96,14 @@ function App() {
     getTables(project.ip);
   };
 
-  const handleCreateNewProject = () => {
-    //
+  const handleCreateNewProject = (projectName) => {
+    console.log(`create new project: ${projectName}`);
+    // try {
+    //   const response = createProject(projectName);
+    //   console.log(response);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   // handling user login return login response data to handle input error on the form.
@@ -182,14 +189,21 @@ function App() {
           element={<Login onSubmit={handleLogin} setJWT={setJWT} />}
         />
         <Route path="signup" element={<Signup onSubmit={handleSignup} />} />
-        <Route path="dashboard" element={<Dashboard username={username} />}>
+        <Route
+          path="dashboard"
+          element={
+            <Dashboard
+              username={username}
+              onCreateNewProject={handleCreateNewProject}
+            />
+          }
+        >
           <Route
             index
             element={
               <Projects
                 projects={projects}
                 onSelectProject={handleProjectSelect}
-                onNewProject={handleCreateNewProject}
               />
             }
           />
@@ -199,7 +213,6 @@ function App() {
               <Projects
                 projects={projects}
                 onSelectProject={handleProjectSelect}
-                onNewProject={handleCreateNewProject}
               />
             }
           />

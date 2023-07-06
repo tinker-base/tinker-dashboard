@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import React from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
@@ -16,6 +16,8 @@ import {
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router";
 import { Tables } from "./tables";
+import { NewProjectSlideOver } from "./new_project_modal";
+import { SidebarContext } from "../states/sidebar_states";
 
 const navigation = [
   {
@@ -112,23 +114,32 @@ const SidebarNav = () => {
   );
 };
 
-export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
+export const Dashboard = ({
+  username,
+  schemas,
+  tables,
+  onTableSelect,
+  onCreateNewProject,
+}) => {
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { dashboardNavOpen, setDashboardNavOpen } =
+    React.useContext(SidebarContext);
+
   const { project } = useParams();
 
   return (
     <>
       <div>
-        <Transition.Root show={sidebarOpen} as={Fragment}>
+        <NewProjectSlideOver onCreateNewProject={onCreateNewProject} />
+        <Transition.Root show={dashboardNavOpen} as={React.Fragment}>
           <Dialog
             as="div"
             // className={`relative z-50 lg:hidden`}
             className={`relative z-50 ${project ? "" : "lg:hidden"}`}
-            onClose={setSidebarOpen}
+            onClose={setDashboardNavOpen}
           >
             <Transition.Child
-              as={Fragment}
+              as={React.Fragment}
               enter="transition-opacity ease-linear duration-300"
               enterFrom="opacity-0"
               enterTo="opacity-100"
@@ -141,7 +152,7 @@ export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
 
             <div id="toggling-sidebar-wrapper" className="fixed inset-0 flex">
               <Transition.Child
-                as={Fragment}
+                as={React.Fragment}
                 enter="transition ease-in-out duration-300 transform"
                 enterFrom="-translate-x-full"
                 enterTo="translate-x-0"
@@ -151,7 +162,7 @@ export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
               >
                 <Dialog.Panel className="relative flex w-full max-w-xs flex-1">
                   <Transition.Child
-                    as={Fragment}
+                    as={React.Fragment}
                     enter="ease-in-out duration-300"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
@@ -163,7 +174,7 @@ export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
                       <button
                         type="button"
                         className="-m-2.5 p-2.5"
-                        onClick={() => setSidebarOpen(false)}
+                        onClick={() => setDashboardNavOpen(false)}
                       >
                         <span className="sr-only">Close sidebar</span>
                         <XMarkIcon
@@ -301,7 +312,7 @@ export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
                 project ? "" : "hidden"
               }`}
               // className={`-m-2.5 p-2.5 text-gray-700 lg:hidden`}
-              onClick={() => setSidebarOpen(true)}
+              onClick={() => setDashboardNavOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -334,11 +345,11 @@ export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
                 <Menu as="div" className="relative">
                   <Menu.Button className="-m-1.5 flex items-center p-1.5">
                     <span className="sr-only">Open user menu</span>
-                    <img
+                    {/* <img
                       className="h-8 w-8 rounded-full bg-gray-50"
                       src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                       alt=""
-                    />
+                    /> */}
                     <span className="hidden lg:flex lg:items-center">
                       <span
                         className="ml-4 text-sm font-semibold leading-6 text-gray-900"
@@ -353,7 +364,7 @@ export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
                     </span>
                   </Menu.Button>
                   <Transition
-                    as={Fragment}
+                    as={React.Fragment}
                     enter="transition ease-out duration-100"
                     enterFrom="transform opacity-0 scale-95"
                     enterTo="transform opacity-100 scale-100"
