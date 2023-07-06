@@ -1,5 +1,5 @@
-const { CloudFormation } = require("@aws-sdk/client-cloudformation");
-const fs = require("fs");
+import { CloudFormation } from "@aws-sdk/client-cloudformation";
+import fs from "fs";
 
 const templatePath = "./new_project_CF.json";
 

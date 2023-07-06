@@ -531,7 +531,7 @@
                 "mkdir -p ~/.docker/project-plugins/\n",
                 "curl -SL https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-linux-x86_64 -o ~/.docker/project-plugins/docker-compose\n",
                 "chmod +x ~/.docker/project-plugins/docker-compose\n",
-                "sudo -u ubuntu sh -c 'cd ~ && sudo git clone https://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@github.com/Nodel-Recall/tinker-admin-app.git && cd tinker-admin-app/services/docker && sudo docker compose up -d'\n"
+                "sudo -u ubuntu sh -c 'cd ~ && sudo git clone https://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@github.com/Nodel-Recall/tinker-admin-app.git && cd tinker-admin-app/src/services/docker && sudo docker compose up -d'\n"
               ]
             ]
           }
