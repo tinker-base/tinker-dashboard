@@ -18,6 +18,8 @@ import { useNavigate } from "react-router";
 import { Tables } from "./tables";
 import { NewProjectSlideOver } from "./new_project_modal";
 import { SidebarContext } from "../states/sidebar_states";
+import { LoginContext } from "../states/login";
+import { useSignOut } from "../utils/custom_hooks/signOut";
 
 const navigation = [
   {
@@ -32,10 +34,6 @@ const teams = [
   { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
   { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
   { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
-];
-const userNavigation = [
-  { name: "Your profile", href: "/" },
-  { name: "Sign out", href: "/login" },
 ];
 
 function classNames(...classes) {
@@ -122,11 +120,22 @@ export const Dashboard = ({
   onCreateNewProject,
 }) => {
   const navigate = useNavigate();
+  const { login } = React.useContext(LoginContext);
   const { dashboardNavOpen, setDashboardNavOpen } =
     React.useContext(SidebarContext);
-
+  const signOut = useSignOut();
   const { project } = useParams();
 
+  const userNavigation = [
+    { name: "Your profile", href: () => {} },
+    { name: "Sign out", href: signOut },
+  ];
+
+  React.useEffect(() => {
+    if (!login) {
+      navigate("/login");
+    }
+  });
   return (
     <>
       <div>
@@ -377,7 +386,7 @@ export const Dashboard = ({
                         <Menu.Item key={item.name}>
                           {({ active }) => (
                             <button
-                              onClick={() => navigate("/login")}
+                              onClick={() => item.href()}
                               className={classNames(
                                 active ? "bg-gray-50" : "",
                                 "block px-3 py-1 text-sm leading-6 text-gray-900"

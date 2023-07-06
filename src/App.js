@@ -19,10 +19,12 @@ import { Dashboard } from "./components/dashboard";
 import { Login } from "./components/login";
 import { Signup } from "./components/signup";
 import { PageNotFound } from "./components/page_not_found";
+import { LoginContext } from "./states/login";
 // import { createProject } from "./services/create_project";
 
 function App() {
   const navigate = useNavigate();
+  const {setLogin} = React.useContext(LoginContext)
   const [username, setUsername] = React.useState("");
   const [jwt, setJWT] = React.useState();
   const [projects, setProjects] = React.useState([]);
@@ -113,6 +115,7 @@ function App() {
     try {
       const { data } = await login(credentials);
       if (data) {
+        setLogin(true)
         setJWT(data.token);
         const response = await getUsername(credentials, data.token);
         setUsername(response.data);
