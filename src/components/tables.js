@@ -1,6 +1,10 @@
 import { SchemaSelect } from "./schema_select";
 import { Link } from "react-router-dom";
-import { HomeIcon, TableCellsIcon } from "@heroicons/react/24/outline";
+import {
+  Cog6ToothIcon,
+  HomeIcon,
+  TableCellsIcon,
+} from "@heroicons/react/24/outline";
 
 export const Tables = ({ schemas, tables, onTableSelect }) => {
   return (
@@ -38,6 +42,18 @@ export const Tables = ({ schemas, tables, onTableSelect }) => {
           </li>
         ))}
       </ul>
+      <div className="mt-auto">
+        <a
+          href="/dashboard"
+          className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+        >
+          <Cog6ToothIcon
+            className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
+            aria-hidden="true"
+          />
+          Settings
+        </a>
+      </div>
     </>
   );
 };
