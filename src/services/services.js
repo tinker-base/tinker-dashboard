@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const MOCK_TINKER_ADMIN_IP = "3.137.184.88";
+const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
 
 // Admin DB Routes
 
 export const getProjects = async (jwt) => {
   try {
-    return await axios.get(`http://${MOCK_TINKER_ADMIN_IP}:3000/projects`, {
+    return await axios.get(`http://${TINKER_ADMIN_IP}:3000/projects`, {
       headers: { Authorization: `Bearer ${jwt}` },
     });
   } catch (error) {
@@ -17,7 +17,7 @@ export const getProjects = async (jwt) => {
 export const login = async (credentials) => {
   try {
     return await axios.post(
-      `http://${MOCK_TINKER_ADMIN_IP}:3000/rpc/login`,
+      `http://${TINKER_ADMIN_IP}:3000/rpc/login`,
       credentials
     );
   } catch (error) {
@@ -28,7 +28,7 @@ export const login = async (credentials) => {
 export const uniqueEmail = async (email, jwt) => {
   try {
     return await axios.post(
-      `http://${MOCK_TINKER_ADMIN_IP}:3000/rpc/unique_user_email`,
+      `http://${TINKER_ADMIN_IP}:3000/rpc/unique_user_email`,
       email,
       { headers: { Authorization: `Bearer ${jwt}` } }
     );
@@ -40,7 +40,7 @@ export const uniqueEmail = async (email, jwt) => {
 export const uniqueUsername = async (username, jwt) => {
   try {
     return await axios.post(
-      `http://${MOCK_TINKER_ADMIN_IP}:3000/rpc/unique_username`,
+      `http://${TINKER_ADMIN_IP}:3000/rpc/unique_username`,
       username,
       { headers: { Authorization: `Bearer ${jwt}` } }
     );
@@ -52,7 +52,7 @@ export const uniqueUsername = async (username, jwt) => {
 export const insertUser = async (credentials, jwt) => {
   try {
     return await axios.post(
-      `http://${MOCK_TINKER_ADMIN_IP}:3000/rpc/insert_user`,
+      `http://${TINKER_ADMIN_IP}:3000/rpc/insert_user`,
       credentials,
       { headers: { Authorization: `Bearer ${jwt}` } }
     );
@@ -64,7 +64,7 @@ export const insertUser = async (credentials, jwt) => {
 export const getUsername = async (credentials, jwt) => {
   try {
     return await axios.post(
-      `http://${MOCK_TINKER_ADMIN_IP}:3000/rpc/get_username`,
+      `http://${TINKER_ADMIN_IP}:3000/rpc/get_username`,
       credentials,
       { headers: { Authorization: `Bearer ${jwt}` } }
     );
