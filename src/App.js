@@ -20,11 +20,10 @@ import { Login } from "./components/login";
 import { Signup } from "./components/signup";
 import { PageNotFound } from "./components/page_not_found";
 import { LoginContext } from "./states/login";
-// import { createProject } from "./services/create_project";
 
 function App() {
   const navigate = useNavigate();
-  const {setLogin} = React.useContext(LoginContext)
+  const { setLogin } = React.useContext(LoginContext);
   const [username, setUsername] = React.useState("");
   const [jwt, setJWT] = React.useState();
   const [projects, setProjects] = React.useState([]);
@@ -98,16 +97,6 @@ function App() {
     getTables(project.ip);
   };
 
-  const handleCreateNewProject = (projectName) => {
-    console.log(`create new project: ${projectName}`);
-    // try {
-    //   const response = createProject(projectName);
-    //   console.log(response);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
-
   // handling user login return login response data to handle input error on the form.
   // also grabs and stores in state the username if login successful
 
@@ -115,7 +104,7 @@ function App() {
     try {
       const { data } = await login(credentials);
       if (data) {
-        setLogin(true)
+        setLogin(true);
         setJWT(data.token);
         const response = await getUsername(credentials, data.token);
         setUsername(response.data);
@@ -192,15 +181,7 @@ function App() {
           element={<Login onSubmit={handleLogin} setJWT={setJWT} />}
         />
         <Route path="signup" element={<Signup onSubmit={handleSignup} />} />
-        <Route
-          path="dashboard"
-          element={
-            <Dashboard
-              username={username}
-              onCreateNewProject={handleCreateNewProject}
-            />
-          }
-        >
+        <Route path="dashboard" element={<Dashboard username={username} />}>
           <Route
             index
             element={

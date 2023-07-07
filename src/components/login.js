@@ -2,7 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import validator from "validator";
 
-export const Login = ({ onSubmit, setJWT }) => {
+import { ReactComponent as TinkerLogo } from "../images/SVG Vector Files/tinker_logo.svg";
+
+export const Login = ({ onSubmit }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [validCredentials, setValidCredentials] = React.useState(null);
@@ -42,14 +44,12 @@ export const Login = ({ onSubmit, setJWT }) => {
     <div className=" bg-indigo-500 h-screen w-screen flex justify-center ali">
       <div className="  flex flex-1 flex-col justify-center  sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          {/* <img
-            className="mx-auto h-10 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
-          /> */}
-          <h2 className="mt-6 text-center text-6xl font-bold leading-9 tracking-tight text-indigo-50">
-            TINKER
-          </h2>
+          <div className="flex justify-center content-center gap-6">
+            <TinkerLogo className="h-20 w-auto" />
+            <h2 className="self-end pb-2 text-6xl font-bold leading-9 tracking-wide text-indigo-50">
+              TINKER
+            </h2>
+          </div>
         </div>
 
         <div className="m-6 sm:mx-auto sm:w-full sm:max-w-[480px]">
@@ -134,7 +134,7 @@ export const Login = ({ onSubmit, setJWT }) => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <input
                     id="remember-me"
@@ -158,7 +158,7 @@ export const Login = ({ onSubmit, setJWT }) => {
                     Forgot password?
                   </a>
                 </div>
-              </div>
+              </div> */}
 
               <div>
                 <button
