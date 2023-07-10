@@ -28,7 +28,7 @@ export const NewProjectSlideOver = ({ onCreateNewProject }) => {
           Project name cannot contain spaces
         </span>
       );
-    } else if (!validProjectName(projectName)) {
+    } else if (!validProjectName(projectName) && projectNameBlur) {
       return (
         <span className="text-red-600 text-xs">
           Project name must start with an alphanumeric character, be between 2
@@ -67,7 +67,7 @@ export const NewProjectSlideOver = ({ onCreateNewProject }) => {
                     className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl"
                     onSubmit={(e) => {
                       e.preventDefault();
-                      if (validProjectName) {
+                      if (validProjectName(projectName)) {
                         closeAndResetSlideOver();
                         onCreateNewProject(projectName);
                       }
