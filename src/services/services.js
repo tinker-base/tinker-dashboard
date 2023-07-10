@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const MOCK_TINKER_ADMIN_IP = "3.137.184.88";
+const MOCK_TINKER_ADMIN_IP = "www.tinker.com";
 
 // Admin DB Routes
 
