@@ -43,8 +43,8 @@ export const Tables = ({ schemas, tables, onTableSelect }) => {
         ))}
       </ul>
       <div className="mt-auto">
-        <a
-          href="/dashboard"
+        <Link
+          to="/dashboard"
           className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
         >
           <Cog6ToothIcon
@@ -52,7 +52,7 @@ export const Tables = ({ schemas, tables, onTableSelect }) => {
             aria-hidden="true"
           />
           Settings
-        </a>
+        </Link>
       </div>
     </>
   );
