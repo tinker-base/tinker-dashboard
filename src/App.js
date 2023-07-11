@@ -5,7 +5,7 @@ import {
   getRows,
   getAllSchemas,
   getAllTablesInSchema,
-  getProjects,
+  fetchAllProjects,
   uniqueEmail,
   insertUser,
   uniqueUsername,
@@ -34,9 +34,9 @@ function App() {
 
   // grabs all the projects in the admin db to be displayed in the dashboard upon login.
 
-  const fetchProjects = async (token = jwt) => {
+  const getProjects = async (token = jwt) => {
     try {
-      const response = await getProjects(token);
+      const response = await fetchAllProjects(token);
       setProjects(response.data);
     } catch (error) {
       console.log("unable to fetch projects", error);
@@ -108,7 +108,7 @@ function App() {
         setJWT(data.token);
         const response = await getUsername(credentials, data.token);
         setUsername(response.data);
-        fetchProjects(data.token);
+        getProjects(data.token);
         navigate("/dashboard");
         return data;
       } else {
@@ -172,6 +172,11 @@ function App() {
     }
   };
 
+  const handleProjectRefresh = async () => {
+    await getProjects();
+    navigate("dashboard/projects");
+  };
+
   return (
     <>
       <Routes>
@@ -188,6 +193,7 @@ function App() {
               <Projects
                 projects={projects}
                 onSelectProject={handleProjectSelect}
+                onRefresh={handleProjectRefresh}
               />
             }
           />
@@ -197,6 +203,7 @@ function App() {
               <Projects
                 projects={projects}
                 onSelectProject={handleProjectSelect}
+                onRefresh={handleProjectRefresh}
               />
             }
           />

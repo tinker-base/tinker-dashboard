@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
+const TINKER_ADMIN_IP = "3.137.184.88";
 
 // Admin DB Routes
 
-export const getProjects = async (jwt) => {
+export const fetchAllProjects = async (jwt) => {
   try {
     return await axios.get(`http://${TINKER_ADMIN_IP}:3000/projects`, {
       headers: { Authorization: `Bearer ${jwt}` },
