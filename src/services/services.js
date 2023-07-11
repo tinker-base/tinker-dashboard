@@ -1,10 +1,6 @@
 import axios from "axios";
 
-<<<<<<< HEAD
-const MOCK_TINKER_ADMIN_IP = "www.tinker.com";
-=======
 const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
->>>>>>> b90dc7e3f33ad63a9782031fcebb63cd3c9b637b
 
 // Admin DB Routes
 
