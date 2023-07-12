@@ -12,7 +12,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const Tables = ({ schemas, tables, onTableSelect }) => {
+export const Tables = ({ schemas, tables, onTableSelect, onClickAddTable }) => {
   const { table } = useParams();
 
   return (
@@ -43,9 +43,7 @@ export const Tables = ({ schemas, tables, onTableSelect }) => {
         </div>
         <PlusIcon
           className="h-6 w-6 shrink-0 text-indigo-200 hover:bg-indigo-700 border rounded-full border-indigo-200 hover:text-white hover:border-white"
-          onClick={() => {
-            console.log("add table");
-          }}
+          onClick={onClickAddTable()}
           aria-hidden="true"
         />
       </div>

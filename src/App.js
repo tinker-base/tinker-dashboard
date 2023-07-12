@@ -21,8 +21,12 @@ import { Login } from "./components/login";
 import { Signup } from "./components/signup";
 import { PageNotFound } from "./components/page_not_found";
 import { LoginContext } from "./states/login";
+import {
+  ToggleAddRowSlideOver,
+  ToggleAddTableSlideOver,
+} from "./utils/slideover_handlers";
 
-function App() {
+const App = () => {
   const navigate = useNavigate();
   const { setLogin } = React.useContext(LoginContext);
   const [username, setUsername] = React.useState("");
@@ -32,7 +36,7 @@ function App() {
   const [tables, setTables] = React.useState([]);
   const [schemas, setSchemas] = React.useState([]);
   const [rows, setRows] = React.useState([]);
-  const [columns, setColumns] = React.useState(["a"]);
+  const [columns, setColumns] = React.useState([]);
 
   // grabs all the projects in the admin db to be displayed in the dashboard upon login.
 
@@ -82,11 +86,9 @@ function App() {
   const getTableRows = async (tableTitle) => {
     try {
       const columns = await getColumns(projectURL, tableTitle, jwt);
-      console.log(columns.data);
       setColumns(columns.data);
       const response = await getRows(projectURL, tableTitle, jwt);
       setRows(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log("unable to get rows from table");
     }
@@ -223,12 +225,19 @@ function App() {
               schemas={schemas}
               tables={tables}
               onTableSelect={getTableRows}
+              toggleAddTableSlideOver={ToggleAddTableSlideOver}
             />
           }
         >
           <Route
             path="tables/:table"
-            element={<TableEditor columns={columns} rows={rows} />}
+            element={
+              <TableEditor
+                columns={columns}
+                rows={rows}
+                onClickAddRow={ToggleAddRowSlideOver}
+              />
+            }
           />
         </Route>
 
@@ -236,6 +245,6 @@ function App() {
       </Routes>
     </>
   );
-}
+};
 
 export default App;
