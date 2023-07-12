@@ -6,7 +6,7 @@ const TINKER_ADMIN_IP = "3.137.184.88";
 
 export const fetchAllProjects = async (jwt) => {
   try {
-    return await axios.get(`http://${TINKER_ADMIN_IP}:3000/projects`, {
+    return await axios.get(`https://${TINKER_ADMIN_IP}:3000/projects`, {
       headers: { Authorization: `Bearer ${jwt}` },
     });
   } catch (error) {
@@ -17,7 +17,7 @@ export const fetchAllProjects = async (jwt) => {
 export const login = async (credentials) => {
   try {
     return await axios.post(
-      `http://${TINKER_ADMIN_IP}:3000/rpc/login`,
+      `https://${TINKER_ADMIN_IP}:3000/rpc/login`,
       credentials
     );
   } catch (error) {
@@ -28,7 +28,7 @@ export const login = async (credentials) => {
 export const uniqueEmail = async (email, jwt) => {
   try {
     return await axios.post(
-      `http://${TINKER_ADMIN_IP}:3000/rpc/unique_user_email`,
+      `https://${TINKER_ADMIN_IP}:3000/rpc/unique_user_email`,
       email,
       { headers: { Authorization: `Bearer ${jwt}` } }
     );
@@ -40,7 +40,7 @@ export const uniqueEmail = async (email, jwt) => {
 export const uniqueUsername = async (username, jwt) => {
   try {
     return await axios.post(
-      `http://${TINKER_ADMIN_IP}:3000/rpc/unique_username`,
+      `https://${TINKER_ADMIN_IP}:3000/rpc/unique_username`,
       username,
       { headers: { Authorization: `Bearer ${jwt}` } }
     );
@@ -52,7 +52,7 @@ export const uniqueUsername = async (username, jwt) => {
 export const insertUser = async (credentials, jwt) => {
   try {
     return await axios.post(
-      `http://${TINKER_ADMIN_IP}:3000/rpc/insert_user`,
+      `https://${TINKER_ADMIN_IP}:3000/rpc/insert_user`,
       credentials,
       { headers: { Authorization: `Bearer ${jwt}` } }
     );
@@ -64,7 +64,7 @@ export const insertUser = async (credentials, jwt) => {
 export const getUsername = async (credentials, jwt) => {
   try {
     return await axios.post(
-      `http://${TINKER_ADMIN_IP}:3000/rpc/get_username`,
+      `https://${TINKER_ADMIN_IP}:3000/rpc/get_username`,
       credentials,
       { headers: { Authorization: `Bearer ${jwt}` } }
     );
@@ -77,7 +77,7 @@ export const getUsername = async (credentials, jwt) => {
 
 export const getRows = async (url, table, jwt) => {
   try {
-    return await axios.get(`http://${url}:3000/${table}`, {
+    return await axios.get(`https://${url}:3000/${table}`, {
       headers: { Authorization: `Bearer ${jwt}` },
     });
   } catch (error) {
@@ -100,7 +100,7 @@ export const getColumns = async (url, table, jwt) => {
 export const getAllTablesInSchema = async (url, schemaName = "public", jwt) => {
   try {
     return await axios.get(
-      `http://${url}:3000/rpc/tables_in_schema?schema=${schemaName}`,
+      `https://${url}:3000/rpc/tables_in_schema?schema=${schemaName}`,
       { headers: { Authorization: `Bearer ${jwt}` } }
     );
   } catch (error) {
@@ -110,7 +110,7 @@ export const getAllTablesInSchema = async (url, schemaName = "public", jwt) => {
 
 export const getAllSchemas = async (url, jwt) => {
   try {
-    return await axios.get(`http://${url}:3000/rpc/all_schemas`, {
+    return await axios.get(`https://${url}:3000/rpc/all_schemas`, {
       headers: { Authorization: `Bearer ${jwt}` },
     });
   } catch (error) {
