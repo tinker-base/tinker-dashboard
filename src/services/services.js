@@ -85,6 +85,18 @@ export const getRows = async (url, table, jwt) => {
   }
 };
 
+export const getColumns = async (url, table, jwt) => {
+  try {
+    return await axios.post(
+      `http://${url}:3000/rpc/get_columns_from_table`,
+      { p_table_name: table },
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {}
+};
+
 export const getAllTablesInSchema = async (url, schemaName = "public", jwt) => {
   try {
     return await axios.get(
