@@ -6,12 +6,13 @@ import {
   FolderIcon,
   // UsersIcon,
 } from "@heroicons/react/24/outline";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { Tables } from "./tables";
 import { LoginContext } from "../states/login";
 import { useSignOut } from "../utils/custom_hooks/signOut";
 import { ReactComponent as TinkerLogo } from "../images/SVG Vector Files/tinker_logo.svg";
+import { AddTableSlideOver, NewProjectSlideOver } from "./slideovers/add_table";
+import { AddRowSlideOver } from "./slideovers/add_row";
 
 const navigation = [
   {
@@ -144,7 +145,12 @@ const SidebarNav = () => {
   );
 };
 
-export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
+export const Dashboard = ({
+  schemas,
+  tables,
+  onTableSelect,
+  toggleAddTableSlideOver,
+}) => {
   const navigate = useNavigate();
   const { login } = React.useContext(LoginContext);
 
@@ -158,6 +164,16 @@ export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
   return (
     <>
       <div>
+        <AddTableSlideOver
+          onCreateNewTable={() => {
+            console.log("create table");
+          }}
+        />
+        <AddRowSlideOver
+          onAddRow={() => {
+            console.log("insert new row");
+          }}
+        />
         {/* Static sidebar for desktop */}
         <div
           id="static-sidebar-wrapper"
@@ -181,6 +197,7 @@ export const Dashboard = ({ username, schemas, tables, onTableSelect }) => {
                   schemas={schemas}
                   tables={tables}
                   onTableSelect={onTableSelect}
+                  onClickAddTable={toggleAddTableSlideOver}
                 />
               ) : (
                 <SidebarNav />
