@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const TINKER_ADMIN_IP = "3.137.184.88";
+const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
 
 // Admin DB Routes
 
