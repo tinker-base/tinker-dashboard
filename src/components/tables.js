@@ -1,12 +1,20 @@
+import React from "react";
 import { SchemaSelect } from "./schema_select";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   Cog6ToothIcon,
   HomeIcon,
   TableCellsIcon,
+  PlusIcon,
 } from "@heroicons/react/24/outline";
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
 export const Tables = ({ schemas, tables, onTableSelect }) => {
+  const { table } = useParams();
+
   return (
     <>
       <Link
@@ -23,28 +31,44 @@ export const Tables = ({ schemas, tables, onTableSelect }) => {
       <SchemaSelect schemas={schemas} />
       <div className="border-b-2 border-indigo-100 my-6"></div>
 
-      <div className="flex gap-x-3 text-white pb-6">
-        <TableCellsIcon
-          className={"text-indigo-200 group-hover:text-white h-6 w-6 shrink-0"}
+      <div className="flex text-white pb-6 justify-between">
+        <div className="flex gap-x-2">
+          <TableCellsIcon
+            className={
+              "text-indigo-200 group-hover:text-white h-6 w-6 shrink-0"
+            }
+            aria-hidden="true"
+          />
+          <p className="">Tables</p>
+        </div>
+        <PlusIcon
+          className="h-6 w-6 shrink-0 text-indigo-200 hover:bg-indigo-700 border rounded-full border-indigo-200 hover:text-white hover:border-white"
+          onClick={() => {
+            console.log("add table");
+          }}
           aria-hidden="true"
         />
-        <p>Tables</p>
       </div>
-      <ul className="flex flex-col gap-y-4">
-        {tables.map((tableName) => (
-          <li key={tableName} onClick={() => onTableSelect(tableName)}>
-            <Link
-              to={`tables/${tableName}`}
-              className="text-indigo-200 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold active:bg-indigo-700"
-            >
-              {tableName}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className="overflow-auto">
+        <ul className="flex flex-col gap-y-1">
+          {tables.map((tableName) => (
+            <li key={tableName} onClick={() => onTableSelect(tableName)}>
+              <Link
+                to={`tables/${tableName}`}
+                className={classNames(
+                  `text-indigo-200 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold`,
+                  table === tableName ? "text-white bg-indigo-700" : ""
+                )}
+              >
+                {tableName}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
       <div className="mt-auto">
-        <a
-          href="/dashboard"
+        <Link
+          to="/dashboard"
           className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
         >
           <Cog6ToothIcon
@@ -52,7 +76,7 @@ export const Tables = ({ schemas, tables, onTableSelect }) => {
             aria-hidden="true"
           />
           Settings
-        </a>
+        </Link>
       </div>
     </>
   );

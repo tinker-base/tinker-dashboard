@@ -5,12 +5,13 @@ import {
   getRows,
   getAllSchemas,
   getAllTablesInSchema,
-  getProjects,
+  fetchAllProjects,
   uniqueEmail,
   insertUser,
   uniqueUsername,
   login,
   getUsername,
+  getColumns,
 } from "./services/services";
 import { TableEditor } from "./components/table_editor";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -31,12 +32,13 @@ function App() {
   const [tables, setTables] = React.useState([]);
   const [schemas, setSchemas] = React.useState([]);
   const [rows, setRows] = React.useState([]);
+  const [columns, setColumns] = React.useState(["a"]);
 
   // grabs all the projects in the admin db to be displayed in the dashboard upon login.
 
-  const fetchProjects = async (token = jwt) => {
+  const getProjects = async (token = jwt) => {
     try {
-      const response = await getProjects(token);
+      const response = await fetchAllProjects(token);
       setProjects(response.data);
     } catch (error) {
       console.log("unable to fetch projects", error);
@@ -79,8 +81,12 @@ function App() {
 
   const getTableRows = async (tableTitle) => {
     try {
+      const columns = await getColumns(projectURL, tableTitle, jwt);
+      console.log(columns.data);
+      setColumns(columns.data);
       const response = await getRows(projectURL, tableTitle, jwt);
       setRows(response.data);
+      console.log(response.data);
     } catch (error) {
       console.log("unable to get rows from table");
     }
@@ -108,7 +114,7 @@ function App() {
         setJWT(data.token);
         const response = await getUsername(credentials, data.token);
         setUsername(response.data);
-        fetchProjects(data.token);
+        getProjects(data.token);
         navigate("/dashboard");
         return data;
       } else {
@@ -172,6 +178,11 @@ function App() {
     }
   };
 
+  const handleProjectRefresh = async () => {
+    await getProjects();
+    navigate("dashboard/projects");
+  };
+
   return (
     <>
       <Routes>
@@ -188,6 +199,7 @@ function App() {
               <Projects
                 projects={projects}
                 onSelectProject={handleProjectSelect}
+                onRefresh={handleProjectRefresh}
               />
             }
           />
@@ -197,6 +209,7 @@ function App() {
               <Projects
                 projects={projects}
                 onSelectProject={handleProjectSelect}
+                onRefresh={handleProjectRefresh}
               />
             }
           />
@@ -213,7 +226,10 @@ function App() {
             />
           }
         >
-          <Route path="tables/:table" element={<TableEditor rows={rows} />} />
+          <Route
+            path="tables/:table"
+            element={<TableEditor columns={columns} rows={rows} />}
+          />
         </Route>
 
         <Route path="*" element={<PageNotFound />} />
