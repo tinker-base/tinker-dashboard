@@ -55,6 +55,7 @@ export const AddRowSlideOver = ({ onAddRow, getColumnConstraints }) => {
     try {
       const updatedColumns = onlyColumnsWithValues();
       await onAddRow(table, updatedColumns);
+      setErrorBanner(false);
       setSuccessBanner(true);
       setTimeout(() => {
         closeAndResetSlideOver();
