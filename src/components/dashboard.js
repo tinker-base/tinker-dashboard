@@ -151,6 +151,8 @@ export const Dashboard = ({
   onTableSelect,
   toggleAddTableSlideOver,
   onCreateNewTable,
+  getConstraints,
+  addRow,
 }) => {
   const navigate = useNavigate();
   const { login } = React.useContext(LoginContext);
@@ -166,10 +168,9 @@ export const Dashboard = ({
     <>
       <div>
         <AddTableSlideOver onCreateNewTable={onCreateNewTable} />
-        <AddRowSlideOver
-          onAddRow={() => {
-            console.log("insert new row");
-          }}
+        <AddRowSlideOver ///
+          onAddRow={addRow}
+          getColumnConstraints={getConstraints}
         />
         {/* Static sidebar for desktop */}
         <div

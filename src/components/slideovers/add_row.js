@@ -2,47 +2,224 @@ import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { SidebarContext } from "../../states/sidebar_states";
-import { validTableName, whiteSpace } from "../../utils/helpers";
 import { useParams } from "react-router";
+import { SuccessBanner } from "../banners/success_banner";
+import { ErrorBanner } from "../banners/error_banner";
 
-export const AddRowSlideOver = ({ onAddRow }) => {
+export const AddRowSlideOver = ({ onAddRow, getColumnConstraints }) => {
   const { table } = useParams();
   const { addRow, setAddRow } = React.useContext(SidebarContext);
-  const [columnName, setColumnName] = React.useState("");
+  const [columnValues, setColumnValues] = React.useState({});
   const [tableNameBlur, setTableNameBlur] = React.useState(false);
+  const [columnConstraints, setColumnConstraints] = React.useState([]);
+  const [successBanner, setSuccessBanner] = React.useState(false);
+  const [errorBanner, setErrorBanner] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
 
-  const closeAndResetSlideOver = () => {
-    setAddRow(false);
-    setTableNameBlur(false);
-    setColumnName("");
+  React.useEffect(() => {
+    (async () => {
+      if (table) {
+        try {
+          const { data } = await getColumnConstraints(table);
+          const multipleConstraintsCollapsed =
+            collapseMultipleConstraints(data);
+          setColumnConstraints(multipleConstraintsCollapsed);
+        } catch (error) {
+          console.log("Error retrieving table constraints.");
+        }
+      }
+    })();
+  }, [table, getColumnConstraints]);
+
+  const formatDefaultString = (column_default) => {
+    let placeholder = column_default.split(":")[0];
+    if (placeholder[0] === "'") {
+      placeholder = placeholder.slice(1, placeholder.length - 1);
+    }
+
+    //Need to handle defaults that return CURRENT_TIMESTAMP. It's useful for SQL but an eyesore for us to display
+    return placeholder;
   };
-  const ColumnInputErrorMessage = () => {
-    if (columnName.length === 0 && tableNameBlur) {
-      return (
-        <span className="text-red-600 text-xs">Table name cannot be empty</span>
+
+  const onlyColumnsWithValues = () => {
+    return Object.keys(columnValues).reduce((newObj, column) => {
+      if (columnValues[column]) {
+        newObj[column] = columnValues[column];
+      }
+      return newObj;
+    }, {});
+  };
+
+  const addRowToTable = async (e) => {
+    e.preventDefault();
+    try {
+      const updatedColumns = onlyColumnsWithValues();
+      await onAddRow(table, updatedColumns);
+      setSuccessBanner(true);
+      setTimeout(() => {
+        closeAndResetSlideOver();
+        setColumnValues({});
+      }, 1000);
+      // closeAndResetSlideOver();
+      // setColumnValues({});
+    } catch (error) {
+      setErrorMessage(
+        "Failed to run sql query: " + error.response.data.message
       );
-    } else if (whiteSpace(columnName) && tableNameBlur) {
+      setErrorBanner(true);
+    }
+  };
+
+  const collapseMultipleConstraints = (constraints) => {
+    let seen = {};
+    constraints.forEach((constraint) => {
+      const name = constraint.column_name;
+      let clause = constraint.check_clause
+        ? constraint.check_clause
+        : constraint.constraint_type;
+      if (seen[name]) {
+        seen[name].constraint_type.push(clause); ///Assuming it's already an array
+      } else {
+        seen[name] = constraint;
+        if (clause) {
+          seen[name].constraint_type = [clause];
+        }
+      }
+    });
+    return Object.values(seen);
+  };
+
+  const setPlaceHolder = (constraint) => {
+    let placeholder = "";
+    if (constraint.column_default) {
+      if (constraint.column_default.indexOf("nextval") !== -1) {
+        placeholder = "Automatically generated in sequence";
+      } else {
+        placeholder = formatDefaultString(constraint.column_default);
+      }
+    } else if (constraint.data_type === "timestamptz") {
+      placeholder = "CURRENT_TIMESTAMP";
+    } else if (!constraint.nullable) {
+      placeholder = "NULL";
+    }
+
+    return placeholder;
+  };
+
+  const formatClause = (string) => {
+    return string.replace(/\(+/g, "(").replace(/\)+/g, ")");
+  };
+
+  const displayInputWithConstraints = (constraintObj, placeholder) => {
+    const columnName = constraintObj.column_name;
+
+    if (
+      constraintObj.character_maximum_length &&
+      constraintObj.character_maximum_length >= 100
+    ) {
       return (
-        <span className="text-red-600 text-xs">
-          Table name cannot contain spaces
-        </span>
+        <textarea
+          type="text"
+          name="project-name"
+          rows="4"
+          placeholder={placeholder}
+          value={columnValues[columnName] || placeholder}
+          onChange={function (e) {
+            columnValues[columnName] = e.target.value;
+            setColumnValues({
+              ...columnValues,
+            });
+          }}
+          onBlur={() => setTableNameBlur(true)}
+          className="w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        />
       );
-    } else if (columnName.length > 31) {
+    } else if (constraintObj.data_type === "bool") {
       return (
-        <span className="text-red-600 text-xs">
-          Table name cannot be more than 31 chars
-        </span>
-      );
-    } else if (!validTableName(columnName) && tableNameBlur) {
-      return (
-        <span className="text-red-600 text-xs">
-          Project name must start with (a-z) or (_) & only contains (a-z), (0-9)
-          and (_).
-        </span>
+        <select
+          type="text"
+          name="project-name"
+          value={columnValues[columnName] || placeholder || "true"}
+          onChange={function (e) {
+            columnValues[columnName] = e.target.value;
+            setColumnValues({
+              ...columnValues,
+            });
+          }}
+          onBlur={() => setTableNameBlur(true)}
+          className="w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        >
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
       );
     } else {
-      <span className="opacity-0">hidden</span>;
+      return (
+        <input
+          type={placeholder === "CURRENT_TIMESTAMP" ? "datetime-local" : "text"}
+          name="project-name"
+          placeholder={placeholder}
+          value={columnValues[columnName] || ""}
+          onChange={function (e) {
+            columnValues[columnName] = e.target.value;
+            setColumnValues({
+              ...columnValues,
+            });
+          }}
+          onBlur={() => setTableNameBlur(true)}
+          className="w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        />
+      );
     }
+  };
+
+  function displayColumns() {
+    return columnConstraints.map((constraint) => {
+      let placeholder = setPlaceHolder(constraint);
+      const columnName = constraint.column_name;
+      return (
+        <div
+          className="divide-y divide-gray-200 px-4 sm:px-6"
+          key={constraint.column_name}
+        >
+          <div className="space-y-6 pb-5 pt-6">
+            <div>
+              <label
+                htmlFor="project-name"
+                className="text-sm font-medium leading-6 text-gray-900 mr-2"
+              >
+                <span className="px-2">
+                  {columnName} <span>({constraint.data_type})</span>
+                </span>
+              </label>
+              <div className="mt-2">
+                {displayInputWithConstraints(constraint, placeholder)}
+
+                <span className="text-gray-400 text-sm italic px-2">
+                  {constraint.constraint_type
+                    ? formatClause(constraint.constraint_type.join(", "))
+                    : ""}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    });
+  }
+
+  ///There may be data with multiple constraints
+
+  const closeAndResetSlideOver = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    setColumnValues({});
+    setErrorMessage("");
+    setErrorBanner(false);
+    setSuccessBanner(false);
+    setAddRow(false);
+    setTableNameBlur(false);
   };
 
   return (
@@ -67,15 +244,18 @@ export const AddRowSlideOver = ({ onAddRow }) => {
                 leaveTo="translate-x-full"
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-xl">
+                  <div
+                    aria-live="assertive"
+                    className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6 z-100"
+                  >
+                    {successBanner ? (
+                      <SuccessBanner message={"Row successfully created!"} />
+                    ) : null}
+                    {errorBanner ? <ErrorBanner error={errorMessage} /> : null}
+                  </div>
                   <form
                     className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      if (validTableName(columnName)) {
-                        closeAndResetSlideOver();
-                        onAddRow(columnName);
-                      }
-                    }}
+                    onSubmit={addRowToTable}
                   >
                     <div className="h-0 flex-1 overflow-y-auto">
                       <div className="bg-indigo-700 px-4 py-6 sm:px-6">
@@ -83,6 +263,12 @@ export const AddRowSlideOver = ({ onAddRow }) => {
                           <Dialog.Title className="text-base font-semibold leading-6 text-white">
                             Add Row
                           </Dialog.Title>
+                          {/* {error && (
+                            <ErrorOverlay
+                              errorMessage={error}
+                              resetErrorMessage={setError}
+                            />
+                          )} */}
                           <div className="ml-3 flex h-7 items-center">
                             <button
                               type="button"
@@ -106,32 +292,7 @@ export const AddRowSlideOver = ({ onAddRow }) => {
                         </div>
                       </div>
                       <div className="flex flex-1 flex-col justify-between">
-                        <div className="divide-y divide-gray-200 px-4 sm:px-6">
-                          <div className="space-y-6 pb-5 pt-6">
-                            <div>
-                              <label
-                                htmlFor="project-name"
-                                className="block text-sm font-medium leading-6 text-gray-900"
-                              >
-                                Table name
-                              </label>
-                              <div className="mt-2">
-                                <input
-                                  type="text"
-                                  name="project-name"
-                                  id="project-name"
-                                  value={columnName}
-                                  onChange={(e) =>
-                                    setColumnName(e.target.value)
-                                  }
-                                  onBlur={() => setTableNameBlur(true)}
-                                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                                <ColumnInputErrorMessage />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        {displayColumns()}
                       </div>
                     </div>
                     <div className="flex flex-shrink-0 justify-end px-4 py-4">

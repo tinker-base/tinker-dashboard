@@ -13,6 +13,8 @@ import {
   getUsername,
   getColumns,
   createNewTable,
+  getColumnConstraints,
+  insertInTable,
 } from "./services/services";
 import { TableEditor } from "./components/table_editor";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -199,6 +201,20 @@ const App = () => {
     }
   };
 
+  const insertRowInTable = async (tableName, rowData) => {
+    const response = await insertInTable(projectURL, tableName, rowData, jwt);
+    await getTableRows(tableName);
+  };
+
+  const columnConstraintsForTable = async (tableName) => {
+    try {
+      const response = await getColumnConstraints(projectURL, tableName, jwt);
+      return response;
+    } catch (e) {
+      console.log("Error: Could not display table constraints");
+    }
+  };
+
   return (
     <>
       <Routes>
@@ -241,6 +257,8 @@ const App = () => {
               onTableSelect={getTableRows}
               toggleAddTableSlideOver={ToggleAddTableSlideOver}
               onCreateNewTable={handleCreateNewTable}
+              getConstraints={columnConstraintsForTable}
+              addRow={insertRowInTable}
             />
           }
         >
