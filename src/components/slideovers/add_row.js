@@ -56,10 +56,11 @@ export const AddRowSlideOver = () => {
 
   const addRowToTable = async (e) => {
     e.preventDefault();
+    setErrorBanner(false);
+    setSuccessBanner(false);
     try {
       const updatedColumns = onlyColumnsWithValues();
       await insertRowInTable(table, updatedColumns);
-      setErrorBanner(false);
       setSuccessBanner(true);
       setTimeout(() => {
         closeAndResetSlideOver();

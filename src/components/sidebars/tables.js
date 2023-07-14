@@ -28,6 +28,8 @@ export const Tables = () => {
     React.useContext(ShowModalContext);
   const { schemas, tables, getTableRows } = React.useContext(FunctionContexts);
 
+  const [selectedTable, setSelectedTable] = React.useState("");
+
   const userNavigation = [
     { name: "Your profile", href: () => {} },
     { name: "Sign out", href: signOut },
@@ -39,7 +41,7 @@ export const Tables = () => {
 
   return (
     <>
-      {showDeleteTable ? <DeleteTableModal tableName={table} /> : null}
+      {showDeleteTable ? <DeleteTableModal tableName={selectedTable} /> : null}
       <Link
         to="/dashboard"
         className="text-indigo-100 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -134,18 +136,28 @@ export const Tables = () => {
                         )}
                       </Menu.Item>
                     </div>
-                    <div className="py-1">
+                    <div
+                      className="py-1"
+                      data-table_name={tableName}
+                      onClick={(e) => {
+                        setSelectedTable(e.currentTarget.dataset.table_name);
+                        confirmTableDelete();
+                      }}
+                    >
                       <Menu.Item>
                         {({ active }) => (
                           <button
-                            data-tableName={tableName}
                             className={classNames(
                               active
                                 ? "bg-gray-100 text-gray-900"
                                 : "text-gray-700",
                               "group flex items-center px-4 py-2 text-sm"
                             )}
-                            onClick={() => {
+                            data-tableName={tableName}
+                            onClick={(e) => {
+                              setSelectedTable(
+                                e.currentTarget.dataset.tableName
+                              );
                               confirmTableDelete();
                             }}
                           >

@@ -184,7 +184,7 @@ export const FunctionsShared = ({ children }) => {
     try {
       const response = await deleteTable(tableName, projectURL, jwt);
       if (response.data === true) {
-        getTables();
+        getTables(projectURL);
       }
       return response;
     } catch (error) {
