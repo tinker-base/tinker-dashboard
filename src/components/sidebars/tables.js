@@ -1,8 +1,8 @@
 import React from "react";
-import { SchemaSelect } from "./schema_select";
+import { SchemaSelect } from "../schema_select";
 import { Link, useParams } from "react-router-dom";
 import { Menu, Transition } from "@headlessui/react";
-import { useSignOut } from "../utils/custom_hooks/signOut";
+import { useSignOut } from "../../utils/custom_hooks/signOut";
 import {
   Cog6ToothIcon,
   HomeIcon,
@@ -12,23 +12,21 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { ShowModalContext } from "../states/show_modals";
-import { DeleteTableModal } from "./modals/delete_table";
+import { ShowModalContext } from "../../states/show_modals";
+import { DeleteTableModal } from "../modals/delete_table";
+import { FunctionContexts } from "../../utils/fetch_handlers";
+import { ToggleAddTableSlideOver } from "../../utils/slideover_handlers";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const Tables = ({
-  schemas,
-  tables,
-  onTableSelect,
-  onClickAddTable,
-  onDeleteTable,
-}) => {
+export const Tables = () => {
   const { table } = useParams();
   const signOut = useSignOut();
-  const { deleteTable, setDeleteTable } = React.useContext(ShowModalContext);
+  const { showDeleteTable, setShowDeleteTable } =
+    React.useContext(ShowModalContext);
+  const { schemas, tables, getTableRows } = React.useContext(FunctionContexts);
 
   const userNavigation = [
     { name: "Your profile", href: () => {} },
@@ -36,14 +34,12 @@ export const Tables = ({
   ];
 
   const confirmTableDelete = () => {
-    setDeleteTable(true);
+    setShowDeleteTable(true);
   };
 
   return (
     <>
-      {deleteTable ? (
-        <DeleteTableModal tableName={table} onDeleteTable={onDeleteTable} />
-      ) : null}
+      {showDeleteTable ? <DeleteTableModal tableName={table} /> : null}
       <Link
         to="/dashboard"
         className="text-indigo-100 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -71,7 +67,7 @@ export const Tables = ({
         {/* adding tables button */}
         <PlusIcon
           className="h-6 w-6 shrink-0 text-indigo-200 hover:bg-indigo-700 border rounded-full border-indigo-200 hover:text-white hover:border-white"
-          onClick={onClickAddTable()}
+          onClick={ToggleAddTableSlideOver()}
           aria-hidden="true"
         />
       </div>
@@ -84,7 +80,7 @@ export const Tables = ({
                 table === tableName ? "text-white bg-indigo-700" : "",
                 `flex justify-between text-indigo-100 hover:text-white hover:bg-indigo-700 rounded-md p-2`
               )}
-              onClick={() => onTableSelect(tableName)}
+              onClick={() => getTableRows(tableName)}
             >
               <Link
                 to={`tables/${tableName}`}
@@ -142,6 +138,7 @@ export const Tables = ({
                       <Menu.Item>
                         {({ active }) => (
                           <button
+                            data-tableName={tableName}
                             className={classNames(
                               active
                                 ? "bg-gray-100 text-gray-900"

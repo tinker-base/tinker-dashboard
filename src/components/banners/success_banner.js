@@ -3,7 +3,7 @@ import { Transition } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-export const SuccessBanner = ({ open, message }) => {
+export const SuccessBanner = ({ message }) => {
   const [show, setShow] = useState(true);
 
   return (

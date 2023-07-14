@@ -1,12 +1,16 @@
 import React from "react";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { SidebarContext } from "../states/sidebar_states";
+import { FunctionContexts } from "../utils/fetch_handlers";
+import { ToggleAddRowSlideOver } from "../utils/slideover_handlers";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const TableEditor = ({ columns, rows, onClickAddRow }) => {
+export const TableEditor = () => {
   const { setEditRow } = React.useContext(SidebarContext);
+  const { columns, rows } = React.useContext(FunctionContexts);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -15,7 +19,7 @@ export const TableEditor = ({ columns, rows, onClickAddRow }) => {
           <button
             type="button"
             className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={onClickAddRow()}
+            onClick={ToggleAddRowSlideOver()}
           >
             Add Row
           </button>

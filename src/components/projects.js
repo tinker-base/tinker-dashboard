@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import React from "react";
+import { FunctionContexts } from "../utils/fetch_handlers";
 
-export const Projects = ({ projects, onSelectProject, onRefresh }) => {
+export const Projects = () => {
+  const { projects, handleProjectSelect, handleProjectRefresh } =
+    React.useContext(FunctionContexts);
   const [rotate, setRotate] = React.useState(false);
 
   const handleRefreshClick = () => {
@@ -9,7 +12,7 @@ export const Projects = ({ projects, onSelectProject, onRefresh }) => {
     setTimeout(() => {
       setRotate(false);
     }, 500);
-    onRefresh();
+    handleProjectRefresh();
   };
 
   return (
@@ -50,7 +53,7 @@ export const Projects = ({ projects, onSelectProject, onRefresh }) => {
             <Link key={project.name} to={"/dashboard/projects/" + project.name}>
               <button
                 className="h-20 w-48 truncate rounded-md border border-gray-200 hover:bg-indigo-100"
-                onClick={() => onSelectProject(project)}
+                onClick={() => handleProjectSelect(project)}
               >
                 {project.name}
               </button>
