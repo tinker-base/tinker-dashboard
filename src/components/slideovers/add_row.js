@@ -47,7 +47,11 @@ export const AddRowSlideOver = ({ onAddRow }) => {
 
   return (
     <Transition.Root show={addRow} as={React.Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={setAddRow}>
+      <Dialog
+        as="div"
+        className="relative z-50"
+        onClose={closeAndResetSlideOver}
+      >
         <div className="fixed inset-0 bg-gray-200/50" />
 
         <div className="fixed inset-0 overflow-hidden">

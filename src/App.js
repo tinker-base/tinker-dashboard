@@ -12,6 +12,7 @@ import {
   login,
   getUsername,
   getColumns,
+  createNewTable,
 } from "./services/services";
 import { TableEditor } from "./components/table_editor";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -111,7 +112,7 @@ const App = () => {
   const handleLogin = async (credentials) => {
     try {
       const { data } = await login(credentials);
-      if (data) {
+      if (data.token) {
         setLogin(true);
         setJWT(data.token);
         const response = await getUsername(credentials, data.token);
@@ -185,6 +186,19 @@ const App = () => {
     navigate("dashboard/projects");
   };
 
+  const handleCreateNewTable = async (formData) => {
+    try {
+      const response = await createNewTable(formData, projectURL, jwt);
+
+      if (response.data) {
+        getTables(projectURL);
+      }
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Routes>
@@ -226,6 +240,7 @@ const App = () => {
               tables={tables}
               onTableSelect={getTableRows}
               toggleAddTableSlideOver={ToggleAddTableSlideOver}
+              onCreateNewTable={handleCreateNewTable}
             />
           }
         >
