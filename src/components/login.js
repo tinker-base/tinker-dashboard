@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import validator from "validator";
 
 import { ReactComponent as TinkerLogo } from "../images/SVG Vector Files/tinker_logo.svg";
+import { FunctionContexts } from "../utils/fetch_handlers";
 
-export const Login = ({ onSubmit }) => {
+export const Login = () => {
+  const { handleLogin } = React.useContext(FunctionContexts);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [validCredentials, setValidCredentials] = React.useState(null);
@@ -60,7 +62,7 @@ export const Login = ({ onSubmit }) => {
                 e.preventDefault();
                 if (inputsFilled()) {
                   try {
-                    const validation = await onSubmit({
+                    const validation = await handleLogin({
                       email: email.toLowerCase(),
                       password: password,
                     });

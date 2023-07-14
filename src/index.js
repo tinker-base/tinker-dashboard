@@ -10,16 +10,16 @@ import { FunctionsShared } from "./utils/fetch_handlers";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <FunctionsShared>
-      <SidebarStates>
-        <ShowModalStates>
-          <LoggedIn>
-            <Router>
+    <Router>
+      <LoggedIn>
+        <FunctionsShared>
+          <SidebarStates>
+            <ShowModalStates>
               <App />
-            </Router>
-          </LoggedIn>
-        </ShowModalStates>
-      </SidebarStates>
-    </FunctionsShared>
+            </ShowModalStates>
+          </SidebarStates>
+        </FunctionsShared>
+      </LoggedIn>
+    </Router>
   </React.StrictMode>
 );
