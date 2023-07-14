@@ -3,8 +3,8 @@ import { Transition } from "@headlessui/react";
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-export const ErrorBanner = ({  error }) => {
-  // const [show, setShow] = useState(true);
+export const ErrorBanner = ({ error }) => {
+  const [show, setShow] = useState(true);
 
   // React.useEffect(() => {
   //   setShow(open);
@@ -20,7 +20,7 @@ export const ErrorBanner = ({  error }) => {
       <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
         {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}
         <Transition
-          show={true}
+          show={show}
           as={Fragment}
           enter="transform ease-out duration-300 transition"
           enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -45,7 +45,7 @@ export const ErrorBanner = ({  error }) => {
                   <p className="mt-1 text-sm text-gray-500">{error}</p>
                 </div>
                 <div className="ml-4 flex flex-shrink-0">
-                  {/* <button
+                  <button
                     type="button"
                     className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     onClick={() => {
@@ -54,7 +54,7 @@ export const ErrorBanner = ({  error }) => {
                   >
                     <span className="sr-only">Close</span>
                     <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-                  </button> */}
+                  </button>
                 </div>
               </div>
             </div>

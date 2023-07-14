@@ -13,6 +13,7 @@ import { useSignOut } from "../utils/custom_hooks/signOut";
 import { ReactComponent as TinkerLogo } from "../images/SVG Vector Files/tinker_logo.svg";
 import { AddTableSlideOver } from "./slideovers/add_table";
 import { AddRowSlideOver } from "./slideovers/add_row";
+import { EditRowSlideOver } from "./slideovers/edit_row";
 
 const navigation = [
   {
@@ -171,13 +172,18 @@ export const Dashboard = ({
             console.log("insert new row");
           }}
         />
+        <EditRowSlideOver
+          onEditRow={() => {
+            console.log("edit row");
+          }}
+        />
         {/* Static sidebar for desktop */}
         <div
           id="static-sidebar-wrapper"
           // className={`${
           // project ? "hidden" : "hidden lg:flex"
           // } lg:fixed lg:inset-y-0 lg:z-50  lg:w-48 lg:flex-col `}
-          className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-48 lg:flex-col"
+          className="fixed inset-y-0 z-50 flex w-48 flex-col"
         >
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div

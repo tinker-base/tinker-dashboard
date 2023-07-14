@@ -260,7 +260,6 @@ export const AddTableSlideOver = ({ onCreateNewTable }) => {
                           closeAndResetSlideOver();
                         }, 2000);
                       } else {
-                        console.log(errorBanner);
                         setErrorMessage(response.message);
                         setErrorBanner(true);
                       }
