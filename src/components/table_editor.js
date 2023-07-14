@@ -1,10 +1,13 @@
-import { Link } from "react-router-dom";
-
+import React from "react";
+import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { SidebarContext } from "../states/sidebar_states";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export const TableEditor = ({ columns, rows, onClickAddRow }) => {
+  const { setEditRow } = React.useContext(SidebarContext);
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -65,15 +68,23 @@ export const TableEditor = ({ columns, rows, onClickAddRow }) => {
                           personIdx !== rows.length - 1
                             ? "border-b border-gray-200"
                             : "",
-                          "relative whitespace-nowrap py-4 pr-4 pl-3 text-right text-sm font-medium sm:pr-8 lg:pr-8"
+                          "relative whitespace-nowrap py-4 pr-2 pl-3 text-right text-sm font-medium"
                         )}
                       >
-                        <Link
-                          to="/dashboard/projects"
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          Edit
-                        </Link>
+                        <div className="flex justify-between">
+                          <PencilIcon
+                            className="w-5 h-5 text-indigo-600 hover:text-indigo-900"
+                            onClick={() => {
+                              setEditRow(true);
+                            }}
+                          />
+                          <TrashIcon
+                            className="w-6 h-6 text-indigo-600 hover:text-indigo-900"
+                            onClick={() => {
+                              console.log("delete row");
+                            }}
+                          />
+                        </div>
                       </td>
                     </tr>
                   );
