@@ -242,7 +242,9 @@ export const AddTableSlideOver = ({ onCreateNewTable }) => {
                     aria-live="assertive"
                     className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6 z-100"
                   >
-                    {successBanner ? <SuccessBanner /> : null}
+                    {successBanner ? (
+                      <SuccessBanner message={"Table successfully created!"} />
+                    ) : null}
                     {errorBanner ? <ErrorBanner error={errorMessage} /> : null}
                   </div>
                   <form

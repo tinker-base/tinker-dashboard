@@ -3,7 +3,7 @@ import { Transition } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-export const SuccessBanner = ({ open }) => {
+export const SuccessBanner = ({ message }) => {
   // const [show, setShow] = useState(true);
 
   return (
@@ -35,9 +35,7 @@ export const SuccessBanner = ({ open }) => {
                   />
                 </div>
                 <div className="ml-3 w-0 flex-1 pt-0.5">
-                  <p className="text-sm font-medium text-gray-900">
-                    Table successfully created!
-                  </p>
+                  <p className="text-sm font-medium text-gray-900">{message}</p>
                 </div>
                 <div className="ml-4 flex flex-shrink-0">
                   {/* <button
