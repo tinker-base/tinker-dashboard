@@ -7,6 +7,7 @@ export const SidebarStates = ({ children }) => {
   const [addTable, setAddTable] = React.useState(false);
   const [addRow, setAddRow] = React.useState(false);
   const [editRow, setEditRow] = React.useState(false);
+
   return (
     <SidebarContext.Provider
       value={{

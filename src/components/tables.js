@@ -8,23 +8,42 @@ import {
   HomeIcon,
   TableCellsIcon,
   PlusIcon,
+  ChevronDownIcon,
+  PencilSquareIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
+import { ShowModalContext } from "../states/show_modals";
+import { DeleteTableModal } from "./modals/delete_table";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const Tables = ({ schemas, tables, onTableSelect, onClickAddTable }) => {
+export const Tables = ({
+  schemas,
+  tables,
+  onTableSelect,
+  onClickAddTable,
+  onDeleteTable,
+}) => {
   const { table } = useParams();
   const signOut = useSignOut();
+  const { deleteTable, setDeleteTable } = React.useContext(ShowModalContext);
 
   const userNavigation = [
     { name: "Your profile", href: () => {} },
     { name: "Sign out", href: signOut },
   ];
 
+  const confirmTableDelete = () => {
+    setDeleteTable(true);
+  };
+
   return (
     <>
+      {deleteTable ? (
+        <DeleteTableModal tableName={table} onDeleteTable={onDeleteTable} />
+      ) : null}
       <Link
         to="/dashboard"
         className="text-indigo-100 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -49,6 +68,7 @@ export const Tables = ({ schemas, tables, onTableSelect, onClickAddTable }) => {
           />
           <p className="">Tables</p>
         </div>
+        {/* adding tables button */}
         <PlusIcon
           className="h-6 w-6 shrink-0 text-indigo-200 hover:bg-indigo-700 border rounded-full border-indigo-200 hover:text-white hover:border-white"
           onClick={onClickAddTable()}
@@ -58,16 +78,92 @@ export const Tables = ({ schemas, tables, onTableSelect, onClickAddTable }) => {
       <div className="overflow-auto">
         <ul className="flex flex-col gap-y-1">
           {tables.map((tableName) => (
-            <li key={tableName} onClick={() => onTableSelect(tableName)}>
+            <li
+              key={tableName}
+              className={classNames(
+                table === tableName ? "text-white bg-indigo-700" : "",
+                `flex justify-between text-indigo-100 hover:text-white hover:bg-indigo-700 rounded-md p-2`
+              )}
+              onClick={() => onTableSelect(tableName)}
+            >
               <Link
                 to={`tables/${tableName}`}
-                className={classNames(
-                  `text-indigo-200 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold`,
-                  table === tableName ? "text-white bg-indigo-700" : ""
-                )}
+                className="w-full group flex gap-x-3 text-sm leading-6 font-semibold"
               >
                 {tableName}
               </Link>
+
+              {/* table dropdown menu */}
+
+              <Menu as="div">
+                <div>
+                  <Menu.Button className="inline-flex w-full justify-center align-middle overflow-hidden ">
+                    <ChevronDownIcon
+                      className="-mr-1 h-5 w-5 text-indigo-200 hover:text-indigo-950"
+                      aria-hidden="true"
+                    />
+                  </Menu.Button>
+                </div>
+
+                <Transition
+                  as={React.Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-28 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div className="py-1">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <button
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "group flex items-center px-4 py-2 text-sm"
+                            )}
+                            onClick={() => {
+                              console.log("edit table");
+                            }}
+                          >
+                            <PencilSquareIcon
+                              className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                              aria-hidden="true"
+                            />
+                            Edit
+                          </button>
+                        )}
+                      </Menu.Item>
+                    </div>
+                    <div className="py-1">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <button
+                            className={classNames(
+                              active
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-700",
+                              "group flex items-center px-4 py-2 text-sm"
+                            )}
+                            onClick={() => {
+                              confirmTableDelete();
+                            }}
+                          >
+                            <TrashIcon
+                              className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                              aria-hidden="true"
+                            />
+                            Delete
+                          </button>
+                        )}
+                      </Menu.Item>
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </Menu>
             </li>
           ))}
         </ul>

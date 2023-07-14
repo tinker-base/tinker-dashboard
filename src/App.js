@@ -13,6 +13,7 @@ import {
   getUsername,
   getColumns,
   createNewTable,
+  deleteTable,
 } from "./services/services";
 import { TableEditor } from "./components/table_editor";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -26,18 +27,19 @@ import {
   ToggleAddRowSlideOver,
   ToggleAddTableSlideOver,
 } from "./utils/slideover_handlers";
+import { FunctionContexts } from "./utils/fetch_handlers";
 
 const App = () => {
   const navigate = useNavigate();
-  const { setLogin } = React.useContext(LoginContext);
   const [username, setUsername] = React.useState("");
-  const [jwt, setJWT] = React.useState();
-  const [projects, setProjects] = React.useState([]);
-  const [projectURL, setProjectURL] = React.useState("");
-  const [tables, setTables] = React.useState([]);
-  const [schemas, setSchemas] = React.useState([]);
-  const [rows, setRows] = React.useState([]);
-  const [columns, setColumns] = React.useState([]);
+  const { setLogin } = React.useContext(LoginContext);
+  const { jwt, setJWT } = React.useContext(FunctionContexts);
+  const { projects, setProjects } = React.useContext(FunctionContexts);
+  const { projectURL, setProjectURL } = React.useContext(FunctionContexts);
+  const { tables, setTables } = React.useContext(FunctionContexts);
+  const { schemas, setSchemas } = React.useContext(FunctionContexts);
+  const { rows, setRows } = React.useContext(FunctionContexts);
+  const { columns, setColumns } = React.useContext(FunctionContexts);
 
   // grabs all the projects in the admin db to be displayed in the dashboard upon login.
 
@@ -199,6 +201,18 @@ const App = () => {
     }
   };
 
+  const handleDeleteTable = async (tableName) => {
+    try {
+      const response = await deleteTable(tableName, projectURL, jwt);
+      if (response.data === true) {
+        getTables();
+      }
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Routes>
@@ -241,6 +255,7 @@ const App = () => {
               onTableSelect={getTableRows}
               toggleAddTableSlideOver={ToggleAddTableSlideOver}
               onCreateNewTable={handleCreateNewTable}
+              onDeleteTable={handleDeleteTable}
             />
           }
         >
