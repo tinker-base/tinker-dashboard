@@ -117,3 +117,13 @@ export const getAllSchemas = async (url, jwt) => {
     return error.response;
   }
 };
+
+export const createNewTable = async (formData, url, jwt) => {
+  try {
+    return await axios.post(`http://${url}:3000/rpc/create_table`, formData, {
+      headers: { Authorization: `Bearer ${jwt}` },
+    });
+  } catch (error) {
+    return error.response;
+  }
+};

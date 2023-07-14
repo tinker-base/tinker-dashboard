@@ -64,7 +64,7 @@ export const Login = ({ onSubmit }) => {
                       email: email.toLowerCase(),
                       password: password,
                     });
-                    setValidCredentials(!!validation);
+                    setValidCredentials(!!validation.token);
                   } catch (error) {
                     console.log(error);
                   }

@@ -11,7 +11,7 @@ import { Tables } from "./tables";
 import { LoginContext } from "../states/login";
 import { useSignOut } from "../utils/custom_hooks/signOut";
 import { ReactComponent as TinkerLogo } from "../images/SVG Vector Files/tinker_logo.svg";
-import { AddTableSlideOver, NewProjectSlideOver } from "./slideovers/add_table";
+import { AddTableSlideOver } from "./slideovers/add_table";
 import { AddRowSlideOver } from "./slideovers/add_row";
 
 const navigation = [
@@ -150,6 +150,7 @@ export const Dashboard = ({
   tables,
   onTableSelect,
   toggleAddTableSlideOver,
+  onCreateNewTable,
 }) => {
   const navigate = useNavigate();
   const { login } = React.useContext(LoginContext);
@@ -164,11 +165,7 @@ export const Dashboard = ({
   return (
     <>
       <div>
-        <AddTableSlideOver
-          onCreateNewTable={() => {
-            console.log("create table");
-          }}
-        />
+        <AddTableSlideOver onCreateNewTable={onCreateNewTable} />
         <AddRowSlideOver
           onAddRow={() => {
             console.log("insert new row");
