@@ -60,8 +60,6 @@ export const AddRowSlideOver = ({ onAddRow, getColumnConstraints }) => {
         closeAndResetSlideOver();
         setColumnValues({});
       }, 1000);
-      // closeAndResetSlideOver();
-      // setColumnValues({});
     } catch (error) {
       setErrorMessage(
         "Failed to run sql query: " + error.response.data.message
