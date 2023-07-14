@@ -16,6 +16,7 @@ import {
   deleteTable,
   getColumnConstraints,
   insertInTable,
+  updateRowInTable,
 } from "./services/services";
 import { TableEditor } from "./components/table_editor";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -228,6 +229,17 @@ const App = () => {
     }
   };
 
+  const editRowInTable = async (tableName, rowData, pk) => {
+    const response = await updateRowInTable(
+      projectURL,
+      tableName,
+      rowData,
+      pk,
+      jwt
+    );
+    await getTableRows(tableName);
+  };
+
   return (
     <>
       <Routes>
@@ -273,6 +285,7 @@ const App = () => {
               onDeleteTable={handleDeleteTable}
               getConstraints={columnConstraintsForTable}
               addRow={insertRowInTable}
+              editRow={editRowInTable}
             />
           }
         >
