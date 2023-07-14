@@ -3,7 +3,7 @@ import { Transition } from "@headlessui/react";
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-export const ErrorBanner = ({ error }) => {
+export const ErrorBanner = ({ open, error }) => {
   const [show, setShow] = useState(true);
 
   // React.useEffect(() => {

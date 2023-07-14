@@ -14,6 +14,8 @@ import {
   getColumns,
   createNewTable,
   deleteTable,
+  getColumnConstraints,
+  insertInTable,
 } from "./services/services";
 import { TableEditor } from "./components/table_editor";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -212,6 +214,19 @@ const App = () => {
       console.log(error);
     }
   };
+  const insertRowInTable = async (tableName, rowData) => {
+    const response = await insertInTable(projectURL, tableName, rowData, jwt);
+    await getTableRows(tableName);
+  };
+
+  const columnConstraintsForTable = async (tableName) => {
+    try {
+      const response = await getColumnConstraints(projectURL, tableName, jwt);
+      return response;
+    } catch (e) {
+      console.log("Error: Could not display table constraints");
+    }
+  };
 
   return (
     <>
@@ -256,6 +271,8 @@ const App = () => {
               toggleAddTableSlideOver={ToggleAddTableSlideOver}
               onCreateNewTable={handleCreateNewTable}
               onDeleteTable={handleDeleteTable}
+              getConstraints={columnConstraintsForTable}
+              addRow={insertRowInTable}
             />
           }
         >

@@ -98,6 +98,18 @@ export const getColumns = async (url, table, jwt) => {
   } catch (error) {}
 };
 
+export const getColumnConstraints = async (url, table, jwt) => {
+  try {
+    return await axios.post(
+      `https://${url}:3000/rpc/get_column_constraints`,
+      { p_table_name: table },
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {}
+};
+
 export const getAllTablesInSchema = async (url, schemaName = "public", jwt) => {
   try {
     return await axios.get(
@@ -141,4 +153,9 @@ export const deleteTable = async (tableName, url, jwt) => {
   } catch (error) {
     return error.response;
   }
+};
+export const insertInTable = async (url, tableName, rowData, jwt) => {
+  return await axios.post(`https://${url}:3000/${tableName}`, rowData, {
+    headers: { Authorization: `Bearer ${jwt}` },
+  });
 };
