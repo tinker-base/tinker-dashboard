@@ -76,11 +76,12 @@ export const EditRowSlideOver = ({ onEditRow, getColumnConstraints }) => {
 
   const editRowInTable = async (e) => {
     e.preventDefault();
+    setErrorBanner(false);
+    setSuccessBanner(false);
     try {
       const updatedColumns = onlyColumnsWithValues();
       const pkObject = createPKObject();
       await onEditRow(table, updatedColumns, pkObject);
-      setErrorBanner(false);
       setSuccessBanner(true);
       setTimeout(() => {
         closeAndResetSlideOver();
