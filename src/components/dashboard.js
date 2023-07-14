@@ -154,6 +154,7 @@ export const Dashboard = ({
   onCreateNewTable,
   getConstraints,
   addRow,
+  editRow,
 }) => {
   const navigate = useNavigate();
   const { login } = React.useContext(LoginContext);
@@ -174,9 +175,8 @@ export const Dashboard = ({
           getColumnConstraints={getConstraints}
         />
         <EditRowSlideOver
-          onEditRow={() => {
-            console.log("edit row");
-          }}
+          getColumnConstraints={getConstraints}
+          onEditRow={editRow}
         />
         {/* Static sidebar for desktop */}
         <div

@@ -7,6 +7,7 @@ function classNames(...classes) {
 
 export const TableEditor = ({ columns, rows, onClickAddRow }) => {
   const { setEditRow } = React.useContext(SidebarContext);
+  const { setRowData } = React.useContext(SidebarContext);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -75,6 +76,7 @@ export const TableEditor = ({ columns, rows, onClickAddRow }) => {
                           <PencilIcon
                             className="w-5 h-5 text-indigo-600 hover:text-indigo-900"
                             onClick={() => {
+                              setRowData(row);
                               setEditRow(true);
                             }}
                           />

@@ -7,6 +7,7 @@ export const SidebarStates = ({ children }) => {
   const [addTable, setAddTable] = React.useState(false);
   const [addRow, setAddRow] = React.useState(false);
   const [editRow, setEditRow] = React.useState(false);
+  const [rowData, setRowData] = React.useState([]);
   return (
     <SidebarContext.Provider
       value={{
@@ -18,6 +19,8 @@ export const SidebarStates = ({ children }) => {
         setAddRow,
         editRow,
         setEditRow,
+        rowData,
+        setRowData,
       }}
     >
       {children}
