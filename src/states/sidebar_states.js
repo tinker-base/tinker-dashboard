@@ -6,6 +6,7 @@ export const SidebarStates = ({ children }) => {
   const [dashboardNavOpen, setDashboardNavOpen] = React.useState(false);
   const [addTable, setAddTable] = React.useState(false);
   const [addRow, setAddRow] = React.useState(false);
+  const [editRow, setEditRow] = React.useState(false);
   return (
     <SidebarContext.Provider
       value={{
@@ -15,6 +16,8 @@ export const SidebarStates = ({ children }) => {
         setAddTable,
         addRow,
         setAddRow,
+        editRow,
+        setEditRow,
       }}
     >
       {children}
