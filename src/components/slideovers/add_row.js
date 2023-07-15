@@ -5,10 +5,14 @@ import { SidebarContext } from "../../states/sidebar_states";
 import { useParams } from "react-router";
 import { SuccessBanner } from "../banners/success_banner";
 import { ErrorBanner } from "../banners/error_banner";
+import { FunctionContexts } from "../../utils/fetch_handlers";
 
-export const AddRowSlideOver = ({ onAddRow, getColumnConstraints }) => {
+export const AddRowSlideOver = () => {
   const { table } = useParams();
   const { addRow, setAddRow } = React.useContext(SidebarContext);
+  const { insertRowInTable, columnConstraintsForTable } =
+    React.useContext(FunctionContexts);
+
   const [columnValues, setColumnValues] = React.useState({});
   const [tableNameBlur, setTableNameBlur] = React.useState(false);
   const [columnConstraints, setColumnConstraints] = React.useState([]);
@@ -20,7 +24,7 @@ export const AddRowSlideOver = ({ onAddRow, getColumnConstraints }) => {
     (async () => {
       if (table) {
         try {
-          const { data } = await getColumnConstraints(table);
+          const { data } = await columnConstraintsForTable(table);
           const multipleConstraintsCollapsed =
             collapseMultipleConstraints(data);
           setColumnConstraints(multipleConstraintsCollapsed);
@@ -29,7 +33,7 @@ export const AddRowSlideOver = ({ onAddRow, getColumnConstraints }) => {
         }
       }
     })();
-  }, [table, getColumnConstraints]);
+  }, [table, columnConstraintsForTable]);
 
   const formatDefaultString = (column_default) => {
     let placeholder = column_default.split(":")[0];
@@ -54,10 +58,9 @@ export const AddRowSlideOver = ({ onAddRow, getColumnConstraints }) => {
     e.preventDefault();
     setErrorBanner(false);
     setSuccessBanner(false);
-
     try {
       const updatedColumns = onlyColumnsWithValues();
-      await onAddRow(table, updatedColumns);
+      await insertRowInTable(table, updatedColumns);
       setSuccessBanner(true);
       setTimeout(() => {
         closeAndResetSlideOver();

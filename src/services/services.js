@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const TINKER_ADMIN_IP = process.env.REACT_APP_TINKER_ADMIN_URL;
+const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
+// const TINKER_ADMIN_IP = "3.137.184.88";
 
 // Admin DB Routes
 
@@ -140,6 +141,19 @@ export const createNewTable = async (formData, url, jwt) => {
   }
 };
 
+export const deleteTable = async (tableName, url, jwt) => {
+  try {
+    return await axios.post(
+      `https://${url}:3000/rpc/delete_table`,
+      { table_name: tableName },
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {
+    return error.response;
+  }
+};
 export const insertInTable = async (url, tableName, rowData, jwt) => {
   return await axios.post(`http://${url}:3000/${tableName}`, rowData, {
     headers: { Authorization: `Bearer ${jwt}` },

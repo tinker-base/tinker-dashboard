@@ -7,6 +7,7 @@ import { DataTypeSelect } from "./data_type_select";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { SuccessBanner } from "../banners/success_banner";
 import { ErrorBanner } from "../banners/error_banner";
+import { FunctionContexts } from "../../utils/fetch_handlers";
 
 // function classNames(...classes) {
 //   return classes.filter(Boolean).join(" ");
@@ -64,8 +65,10 @@ const Column = ({
   );
 };
 
-export const AddTableSlideOver = ({ onCreateNewTable }) => {
+export const AddTableSlideOver = () => {
   const { addTable, setAddTable } = React.useContext(SidebarContext);
+  const { handleCreateNewTable } = React.useContext(FunctionContexts);
+
   const [formData, setFormData] = React.useState({ name: "", description: "" });
   const [blurs, setBlurs] = React.useState({ name: false, description: false });
   const [validForm, setValidForm] = React.useState(false);
@@ -253,7 +256,7 @@ export const AddTableSlideOver = ({ onCreateNewTable }) => {
                       e.preventDefault();
                       setSuccessBanner(false);
                       setErrorBanner(false);
-                      const response = await onCreateNewTable(formatData());
+                      const response = await handleCreateNewTable(formatData());
                       if (response === true) {
                         setSuccessBanner(true);
                         setTimeout(() => {

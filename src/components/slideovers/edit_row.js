@@ -5,10 +5,15 @@ import { SidebarContext } from "../../states/sidebar_states";
 import { useParams } from "react-router";
 import { SuccessBanner } from "../banners/success_banner";
 import { ErrorBanner } from "../banners/error_banner";
+import { FunctionContexts } from "../../utils/fetch_handlers";
 
-export const EditRowSlideOver = ({ onEditRow, getColumnConstraints }) => {
+export const EditRowSlideOver = () => {
   const { table } = useParams();
   const { editRow, setEditRow } = React.useContext(SidebarContext);
+  const {
+    editRowInTable: onEditRow,
+    columnConstraintsForTable: getColumnConstraints,
+  } = React.useContext(FunctionContexts);
   const { rowData } = React.useContext(SidebarContext);
   const [rowDataCopy, setRowDataCopy] = React.useState({});
   const [tableNameBlur, setTableNameBlur] = React.useState(false);

@@ -4,16 +4,22 @@ import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
 import { SidebarStates } from "./states/sidebar_states";
 import { LoggedIn } from "./states/login";
+import { ShowModalStates } from "./states/show_modals";
+import { FunctionsShared } from "./utils/fetch_handlers";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <SidebarStates>
+    <Router>
       <LoggedIn>
-        <Router>
-          <App />
-        </Router>
+        <FunctionsShared>
+          <SidebarStates>
+            <ShowModalStates>
+              <App />
+            </ShowModalStates>
+          </SidebarStates>
+        </FunctionsShared>
       </LoggedIn>
-    </SidebarStates>
+    </Router>
   </React.StrictMode>
 );

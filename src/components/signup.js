@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import validator from "validator";
+import { FunctionContexts } from "../utils/fetch_handlers";
 
-export const Signup = ({ onSubmit }) => {
+export const Signup = () => {
+  const { handleSignup } = React.useContext(FunctionContexts);
   const [username, setUsername] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -102,7 +104,7 @@ export const Signup = ({ onSubmit }) => {
                 e.preventDefault();
                 if (inputsFilled()) {
                   try {
-                    const validations = await onSubmit({
+                    const validations = await handleSignup({
                       email: email.toLowerCase(),
                       password,
                       username,
