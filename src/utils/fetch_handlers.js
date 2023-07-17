@@ -16,6 +16,7 @@ import {
   getColumnConstraints,
   insertInTable,
   updateRowInTable,
+  deleteRow,
 } from "../services/services";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../states/login";
@@ -218,6 +219,11 @@ export const FunctionsShared = ({ children }) => {
     await getTableRows(tableName);
   };
 
+  const deleteRowInTable = async (tableName, pk) => {
+    const response = await deleteRow(projectURL, tableName, pk, jwt);
+    await getTableRows(tableName);
+  };
+
   return (
     <FunctionContexts.Provider
       value={{
@@ -248,6 +254,7 @@ export const FunctionsShared = ({ children }) => {
         insertRowInTable,
         columnConstraintsForTable,
         editRowInTable,
+        deleteRowInTable,
       }}
     >
       {children}

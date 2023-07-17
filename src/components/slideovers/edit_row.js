@@ -9,37 +9,19 @@ import { FunctionContexts } from "../../utils/fetch_handlers";
 
 export const EditRowSlideOver = () => {
   const { table } = useParams();
-  const { editRow, setEditRow } = React.useContext(SidebarContext);
-  const {
-    editRowInTable: onEditRow,
-    columnConstraintsForTable: getColumnConstraints,
-  } = React.useContext(FunctionContexts);
+  const { editRow, setEditRow, columnConstraints } =
+    React.useContext(SidebarContext);
+  const { editRowInTable: onEditRow } = React.useContext(FunctionContexts);
   const { rowData } = React.useContext(SidebarContext);
   const [rowDataCopy, setRowDataCopy] = React.useState({});
   const [tableNameBlur, setTableNameBlur] = React.useState(false);
-  const [columnConstraints, setColumnConstraints] = React.useState([]);
   const [successBanner, setSuccessBanner] = React.useState(false);
   const [errorBanner, setErrorBanner] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
 
   React.useEffect(() => {
-    (async () => {
-      if (table) {
-        try {
-          const { data } = await getColumnConstraints(table);
-          const multipleConstraintsCollapsed =
-            collapseMultipleConstraints(data);
-          setColumnConstraints(multipleConstraintsCollapsed);
-        } catch (error) {
-          console.log("Error retrieving table constraints.");
-        }
-      }
-    })();
-  }, [table, getColumnConstraints]);
-
-  React.useEffect(() => {
     setRowDataCopy({ ...rowData });
-  }, [rowData]);
+  }, [table, editRow, rowData]);
 
   const formatDefaultString = (column_default) => {
     let placeholder = column_default.split(":")[0];
@@ -60,7 +42,7 @@ export const EditRowSlideOver = () => {
     }, {});
   };
 
-  const getPrimaryKeyColumn = () => {
+  const getPrimaryKeyColumn = (columnConstraints) => {
     for (let constraint of columnConstraints) {
       if (
         constraint.constraint_type &&
@@ -71,13 +53,13 @@ export const EditRowSlideOver = () => {
     }
   };
 
-  const createPKObject = () => {
-    let pkColumn = getPrimaryKeyColumn();
+  const createPKObject = (rowData, columnConstraints) => {
+    let pkColumn = getPrimaryKeyColumn(columnConstraints);
     let pkValue = rowData[pkColumn];
     return { column: pkColumn, value: pkValue };
   };
 
-  createPKObject();
+  // createPKObject();
 
   const editRowInTable = async (e) => {
     e.preventDefault();
@@ -85,7 +67,7 @@ export const EditRowSlideOver = () => {
     setSuccessBanner(false);
     try {
       const updatedColumns = onlyColumnsWithValues();
-      const pkObject = createPKObject();
+      const pkObject = createPKObject(rowData, columnConstraints);
       await onEditRow(table, updatedColumns, pkObject);
       setSuccessBanner(true);
       setTimeout(() => {
@@ -100,24 +82,24 @@ export const EditRowSlideOver = () => {
     }
   };
 
-  const collapseMultipleConstraints = (constraints) => {
-    let seen = {};
-    constraints.forEach((constraint) => {
-      const name = constraint.column_name;
-      let clause = constraint.check_clause
-        ? constraint.check_clause
-        : constraint.constraint_type;
-      if (seen[name]) {
-        seen[name].constraint_type.push(clause); ///Assuming it's already an array
-      } else {
-        seen[name] = constraint;
-        if (clause) {
-          seen[name].constraint_type = [clause];
-        }
-      }
-    });
-    return Object.values(seen);
-  };
+  // const collapseMultipleConstraints = (constraints) => {
+  //   let seen = {};
+  //   constraints.forEach((constraint) => {
+  //     const name = constraint.column_name;
+  //     let clause = constraint.check_clause
+  //       ? constraint.check_clause
+  //       : constraint.constraint_type;
+  //     if (seen[name]) {
+  //       seen[name].constraint_type.push(clause); ///Assuming it's already an array
+  //     } else {
+  //       seen[name] = constraint;
+  //       if (clause) {
+  //         seen[name].constraint_type = [clause];
+  //       }
+  //     }
+  //   });
+  //   return Object.values(seen);
+  // };
 
   const setPlaceHolder = (constraint) => {
     let placeholder = "";

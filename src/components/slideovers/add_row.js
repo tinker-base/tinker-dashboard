@@ -9,31 +9,14 @@ import { FunctionContexts } from "../../utils/fetch_handlers";
 
 export const AddRowSlideOver = () => {
   const { table } = useParams();
-  const { addRow, setAddRow } = React.useContext(SidebarContext);
-  const { insertRowInTable, columnConstraintsForTable } =
-    React.useContext(FunctionContexts);
-
+  const { addRow, setAddRow, columnConstraints } =
+    React.useContext(SidebarContext);
+  const { insertRowInTable } = React.useContext(FunctionContexts);
   const [columnValues, setColumnValues] = React.useState({});
   const [tableNameBlur, setTableNameBlur] = React.useState(false);
-  const [columnConstraints, setColumnConstraints] = React.useState([]);
   const [successBanner, setSuccessBanner] = React.useState(false);
   const [errorBanner, setErrorBanner] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
-
-  React.useEffect(() => {
-    (async () => {
-      if (table) {
-        try {
-          const { data } = await columnConstraintsForTable(table);
-          const multipleConstraintsCollapsed =
-            collapseMultipleConstraints(data);
-          setColumnConstraints(multipleConstraintsCollapsed);
-        } catch (error) {
-          console.log("Error retrieving table constraints.");
-        }
-      }
-    })();
-  }, [table, columnConstraintsForTable]);
 
   const formatDefaultString = (column_default) => {
     let placeholder = column_default.split(":")[0];
@@ -74,24 +57,24 @@ export const AddRowSlideOver = () => {
     }
   };
 
-  const collapseMultipleConstraints = (constraints) => {
-    let seen = {};
-    constraints.forEach((constraint) => {
-      const name = constraint.column_name;
-      let clause = constraint.check_clause
-        ? constraint.check_clause
-        : constraint.constraint_type;
-      if (seen[name]) {
-        seen[name].constraint_type.push(clause); ///Assuming it's already an array
-      } else {
-        seen[name] = constraint;
-        if (clause) {
-          seen[name].constraint_type = [clause];
-        }
-      }
-    });
-    return Object.values(seen);
-  };
+  // const collapseMultipleConstraints = (constraints) => {
+  //   let seen = {};
+  //   constraints.forEach((constraint) => {
+  //     const name = constraint.column_name;
+  //     let clause = constraint.check_clause
+  //       ? constraint.check_clause
+  //       : constraint.constraint_type;
+  //     if (seen[name]) {
+  //       seen[name].constraint_type.push(clause); ///Assuming it's already an array
+  //     } else {
+  //       seen[name] = constraint;
+  //       if (clause) {
+  //         seen[name].constraint_type = [clause];
+  //       }
+  //     }
+  //   });
+  //   return Object.values(seen);
+  // };
 
   const setPlaceHolder = (constraint) => {
     let placeholder = "";
@@ -177,7 +160,7 @@ export const AddRowSlideOver = () => {
     }
   };
 
-  function displayColumns() {
+  function displayColumns(columnConstraints) {
     return columnConstraints.map((constraint) => {
       let placeholder = setPlaceHolder(constraint);
       const columnName = constraint.column_name;
@@ -296,7 +279,7 @@ export const AddRowSlideOver = () => {
                         </div>
                       </div>
                       <div className="flex flex-1 flex-col justify-between">
-                        {displayColumns()}
+                        {displayColumns(columnConstraints)}
                       </div>
                     </div>
                     <div className="flex flex-shrink-0 justify-end px-4 py-4">

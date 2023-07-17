@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
+const TINKER_ADMIN_IP = process.env.REACT_APP_TINKER_ADMIN_URL;
 const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
 console.log(`Build is ${process.env.NODE_ENV}`);
 // const TINKER_ADMIN_IP = "3.137.184.88";
@@ -170,6 +170,15 @@ export const updateRowInTable = async (url, tableName, rowData, pk, jwt) => {
   return await axios.put(
     `${protocol}://${url}:3000/${tableName}?${pk.column}=eq.${pk.value}`,
     rowData,
+    {
+      headers: { Authorization: `Bearer ${jwt}` },
+    }
+  );
+};
+
+export const deleteRow = async (url, tableName, pk, jwt) => {
+  return await axios.delete(
+    `http://${url}:3000/${tableName}?${pk.column}=eq.${pk.value}`,
     {
       headers: { Authorization: `Bearer ${jwt}` },
     }
