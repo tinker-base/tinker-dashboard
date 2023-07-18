@@ -9,3 +9,13 @@ export const ToggleAddRowSlideOver = () => {
   const { addRow, setAddRow } = React.useContext(SidebarContext);
   return () => setAddRow(!addRow);
 };
+
+export const ToggleAddColumnSlideOver = () => {
+  const { showAddCol, setShowAddCol } = React.useContext(SidebarContext);
+  return () => setShowAddCol(!showAddCol);
+};
+
+export const ToggleEditColumnSlideOver = () => {
+  const { showEditCol, setShowEditCol } = React.useContext(SidebarContext);
+  return () => setShowEditCol(!showEditCol);
+};

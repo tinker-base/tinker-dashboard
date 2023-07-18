@@ -17,6 +17,8 @@ import {
   insertInTable,
   updateRowInTable,
   deleteRow,
+  addNewColumn,
+  addForeignKey,
 } from "../services/services";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../states/login";
@@ -233,6 +235,31 @@ export const FunctionsShared = ({ children }) => {
     await getTableRows(tableName);
   };
 
+  const handleAddColumns = async (formData) => {
+    console.log(formData.table_name);
+    try {
+      const { data } = await addNewColumn(formData, projectURL, jwt);
+
+      if (data === true) {
+        const colRes = await getColumns(projectURL, formData.table_name, jwt);
+        setColumns(colRes.data);
+        const rowRes = await getRows(projectURL, formData.table_name, jwt);
+        setRows(rowRes.data);
+      }
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleAddForeignKey = async (formData) => {
+    try {
+      const { data } = await addForeignKey(formData, projectURL, jwt);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <FunctionContexts.Provider
       value={{
@@ -264,6 +291,8 @@ export const FunctionsShared = ({ children }) => {
         columnConstraintsForTable,
         editRowInTable,
         deleteRowInTable,
+        handleAddColumns,
+        handleAddForeignKey,
       }}
     >
       {children}
