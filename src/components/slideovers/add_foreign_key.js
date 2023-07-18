@@ -126,7 +126,7 @@ export const ForeignKeySlideOver = ({ colObj, setForeignKeys }) => {
                       <div className="flex flex-1 flex-col justify-between">
                         <div className="divide-y divide-gray-200 px-4 sm:px-6">
                           <div className="space-y-6 pb-5 pt-6">
-                            <div class>
+                            <div>
                               <SchemaSelect
                                 schemas={schemas}
                                 selectedSchema={selectedSchema}

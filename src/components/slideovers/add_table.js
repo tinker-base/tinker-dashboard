@@ -81,7 +81,7 @@ const Column = ({
 export const AddTableSlideOver = () => {
   const { addTable, setAddTable } = React.useContext(SidebarContext);
   const { handleCreateNewTable } = React.useContext(FunctionContexts);
-  const { showForeignKey } = React.useContext(SidebarContext);
+  // const { showForeignKey } = React.useContext(SidebarContext);
 
   const [formData, setFormData] = React.useState({ name: "", description: "" });
   const [blurs, setBlurs] = React.useState({ name: false, description: false });
