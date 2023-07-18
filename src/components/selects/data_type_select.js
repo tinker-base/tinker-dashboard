@@ -47,13 +47,6 @@ function classNames(...classes) {
 export const DataTypeSelect = ({ id, onColInputChange }) => {
   const [selected, setSelected] = useState(datatypes[0]);
 
-  // React.useEffect(() => {
-  //   if (type) {
-  //     const index = datatypes.findIndex((data) => data.type === type);
-  //     setSelected(datatypes[index]);
-  //   }
-  // }, []);
-
   return (
     <Listbox
       value={selected}

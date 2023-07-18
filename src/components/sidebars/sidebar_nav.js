@@ -122,7 +122,7 @@ export const SidebarNav = () => {
           </Transition>
           <Menu.Button className="-m-1.5 flex items-center p-1.5">
             <span className="sr-only">Open user menu</span>
-            <span className="hidden lg:flex lg:items-center">
+            <span className=" flex items-center">
               <span className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white">
                 <Cog6ToothIcon
                   className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"

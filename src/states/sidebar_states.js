@@ -9,6 +9,7 @@ export const SidebarStates = ({ children }) => {
   const [editRow, setEditRow] = React.useState(false);
   const [rowData, setRowData] = React.useState([]);
   const [columnConstraints, setColumnConstraints] = React.useState([]);
+  const [showForeignKey, setShowForeignKey] = React.useState(false);
   return (
     <SidebarContext.Provider
       value={{
@@ -24,6 +25,8 @@ export const SidebarStates = ({ children }) => {
         setRowData,
         columnConstraints,
         setColumnConstraints,
+        showForeignKey,
+        setShowForeignKey,
       }}
     >
       {children}
