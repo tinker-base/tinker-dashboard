@@ -33,6 +33,7 @@ export const Dashboard = () => {
         <AddTableSlideOver />
         <AddRowSlideOver />
         <EditRowSlideOver />
+
         {/* Static sidebar for desktop */}
         <div
           id="static-sidebar-wrapper"

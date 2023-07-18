@@ -4,6 +4,7 @@ const TINKER_ADMIN_IP =
   process.env.NODE_ENV === "development"
     ? process.env.REACT_APP_TINKER_ADMIN_URL
     : process.env.REACT_APP_ADMIN_URL;
+// const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
 const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
 console.log(`Build is ${process.env.NODE_ENV}`);
 // const TINKER_ADMIN_IP = "3.137.184.88";
@@ -153,7 +154,7 @@ export const createNewTable = async (formData, url, jwt) => {
 export const deleteTable = async (tableName, url, jwt) => {
   try {
     return await axios.post(
-      `${protocol}s://${url}:3000/rpc/delete_table`,
+      `${protocol}://${url}:3000/rpc/delete_table`,
       { table_name: tableName },
       {
         headers: { Authorization: `Bearer ${jwt}` },
@@ -181,7 +182,7 @@ export const updateRowInTable = async (url, tableName, rowData, pk, jwt) => {
 
 export const deleteRow = async (url, tableName, pk, jwt) => {
   return await axios.delete(
-    `http://${url}:3000/${tableName}?${pk.column}=eq.${pk.value}`,
+    `${protocol}://${url}:3000/${tableName}?${pk.column}=eq.${pk.value}`,
     {
       headers: { Authorization: `Bearer ${jwt}` },
     }
