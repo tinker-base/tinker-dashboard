@@ -3,7 +3,11 @@ import { useParams } from "react-router";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { SidebarContext } from "../states/sidebar_states";
 import { FunctionContexts } from "../utils/fetch_handlers";
-import { ToggleAddRowSlideOver } from "../utils/slideover_handlers";
+import {
+  ToggleAddRowSlideOver,
+  ToggleAddColumnSlideOver,
+  ToggleEditColumnSlideOver,
+} from "../utils/slideover_handlers";
 import { ShowModalContext } from "../states/show_modals";
 import DeleteRowModal from "./modals/delete_row";
 
@@ -88,17 +92,23 @@ export const TableEditor = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
-        <div className="mt-4  sm:mt-0 sm:flex-none">
-          <button
-            type="button"
-            className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={ToggleAddRowSlideOver()}
-          >
-            Add Row
-          </button>
-        </div>
+      <div className="mt-4 flex items-center gap-x-3">
+        <button
+          type="button"
+          className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          onClick={ToggleAddRowSlideOver()}
+        >
+          Add Row
+        </button>
+        <button
+          type="button"
+          className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          onClick={ToggleAddColumnSlideOver()}
+        >
+          Add Columns
+        </button>
       </div>
+
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle">
@@ -117,6 +127,9 @@ export const TableEditor = () => {
                       >
                         {`${column.col} (${column.data_type})`}
                       </th>
+
+                      // Toggle func for opening the edit column slideover
+                      // onClick={ToggleEditColumnSlideOver()}
                     );
                   })}
                   <th

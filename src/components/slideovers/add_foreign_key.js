@@ -66,7 +66,8 @@ export const ForeignKeySlideOver = ({ colObj, setForeignKeys }) => {
     setForeignKeys((prev) =>
       prev.concat({
         id: colObj.id,
-        command: `FOREIGN KEY (${colObj.name}) REFERENCES ${selectedSchema}.${selectedTable}(${selectedCol})`,
+        command: `REFERENCES ${selectedSchema}.${selectedTable}(${selectedCol}) ON DELETE SET NULL`,
+        // command: `FOREIGN KEY (${colObj.name}) REFERENCES ${selectedSchema}.${selectedTable}(${selectedCol}) ON DELETE SET NULL`,
       })
     );
   };

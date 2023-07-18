@@ -9,6 +9,8 @@ import { AddTableSlideOver } from "./slideovers/add_table";
 import { AddRowSlideOver } from "./slideovers/add_row";
 import { EditRowSlideOver } from "./slideovers/edit_row";
 import { SidebarNav } from "./sidebars/sidebar_nav";
+import { AddColumnSlideOver } from "./slideovers/add_col";
+import { EditColumnSlideOver } from "./slideovers/edit_col";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -33,6 +35,8 @@ export const Dashboard = () => {
         <AddTableSlideOver />
         <AddRowSlideOver />
         <EditRowSlideOver />
+        <AddColumnSlideOver />
+        <EditColumnSlideOver />
 
         {/* Static sidebar for desktop */}
         <div

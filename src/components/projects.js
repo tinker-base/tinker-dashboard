@@ -12,7 +12,7 @@ export const Projects = () => {
   const { project } = useParams();
 
   React.useEffect(() => {
-    if (!jwt || !project) {
+    if (!jwt) {
       (async () => {
         try {
           await getProjects(sessionStorage.getItem("token"));

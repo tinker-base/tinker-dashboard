@@ -9,6 +9,7 @@ import { SuccessBanner } from "../banners/success_banner";
 import { ErrorBanner } from "../banners/error_banner";
 import { FunctionContexts } from "../../utils/fetch_handlers";
 import { ForeignKeySlideOver } from "./add_foreign_key";
+import { useParams } from "react-router";
 
 const Column = ({
   column,
@@ -78,21 +79,19 @@ const Column = ({
   );
 };
 
-export const AddTableSlideOver = () => {
-  const { addTable, setAddTable } = React.useContext(SidebarContext);
-  const { handleCreateNewTable } = React.useContext(FunctionContexts);
-  // const { showForeignKey } = React.useContext(SidebarContext);
+export const AddColumnSlideOver = () => {
+  const { table: columnName } = useParams();
+  const { showAddCol, setShowAddCol } = React.useContext(SidebarContext);
+  const { handleAddColumns } = React.useContext(FunctionContexts);
 
-  const [formData, setFormData] = React.useState({ name: "", description: "" });
-  const [blurs, setBlurs] = React.useState({ name: false, description: false });
-  const [validForm, setValidForm] = React.useState(false);
+  // const [formData, setFormData] = React.useState({ name: "", description: "" });
   const [columns, setColumns] = React.useState([
     {
       id: 1,
-      name: "id",
-      type: "int4",
+      name: "",
+      type: "",
       default: "",
-      primary: true,
+      primary: false,
     },
   ]);
   const [columnCount, setColCount] = React.useState(2);
@@ -102,16 +101,15 @@ export const AddTableSlideOver = () => {
   const [currentCol, setCurrentCol] = React.useState({});
   const [foreignKeys, setForeignKeys] = React.useState([]);
 
-  React.useEffect(() => {
-    validateForm();
-  }, [formData]);
-
   const stringifyColumns = () => {
     const result = [];
     columns.forEach((col) => {
       const currentCol = [];
       currentCol.push(col.name);
       currentCol.push(col.type);
+      if (col.primary) {
+        currentCol.push("PRIMARY KEY");
+      }
       if (col.default) {
         currentCol.push("DEFAULT");
         currentCol.push(col.default);
@@ -123,7 +121,7 @@ export const AddTableSlideOver = () => {
       result.push(currentCol.join(" "));
     });
     // result.push(stringifyForeignKeys());
-    return result.flat();
+    return result.join(", ");
   };
 
   // const stringifyForeignKeys = () => {
@@ -132,16 +130,10 @@ export const AddTableSlideOver = () => {
   //   return result;
   // };
 
-  const findKeyCol = () => {
-    const keyCol = columns.find((col) => col.primary === true);
-    return keyCol.name;
-  };
-
   const formatData = () => {
     const result = {
-      table_name: formData.name,
-      columns: stringifyColumns(),
-      primary_key_column: findKeyCol(),
+      table_name: columnName,
+      column_definitions: stringifyColumns(),
     };
     return result;
   };
@@ -167,36 +159,20 @@ export const AddTableSlideOver = () => {
   };
 
   const closeAndResetSlideOver = () => {
-    setAddTable(false);
+    setShowAddCol(false);
     setColumns([
       {
         id: 1,
-        name: "id",
-        type: "int4",
+        name: "",
+        type: "",
         default: "",
-        primary: true,
+        primary: false,
       },
     ]);
     setColCount(2);
-    setBlurs({ name: false, description: false });
-    setFormData({ name: "", description: "" });
     setErrorBanner(false);
     setSuccessBanner(false);
     setForeignKeys([]);
-  };
-
-  const validateForm = () => {
-    if (validTableName(formData.name)) {
-      setValidForm(true);
-    }
-  };
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
   };
 
   const handleColumnInputChange = (id, event) => {
@@ -219,38 +195,9 @@ export const AddTableSlideOver = () => {
     });
   };
 
-  const TableNameInputErrorMessage = () => {
-    if (formData.name.length === 0 && blurs.name) {
-      return (
-        <span className="text-red-600 text-xs">Table name cannot be empty</span>
-      );
-    } else if (whiteSpace(formData.name)) {
-      return (
-        <span className="text-red-600 text-xs">
-          Table name cannot contain spaces
-        </span>
-      );
-    } else if (formData.name.length > 31) {
-      return (
-        <span className="text-red-600 text-xs">
-          Table name cannot be more than 31 chars
-        </span>
-      );
-    } else if (!validTableName(formData.name) && blurs.name) {
-      return (
-        <span className="text-red-600 text-xs">
-          Project name must start with (a-z) or (_) & only contains (a-z), (0-9)
-          and (_).
-        </span>
-      );
-    } else {
-      return <span className="opacity-0">hidden</span>;
-    }
-  };
-
   return (
     <>
-      <Transition.Root show={addTable} as={React.Fragment}>
+      <Transition.Root show={showAddCol} as={React.Fragment}>
         <Dialog
           as="div"
           className="relative z-50"
@@ -282,7 +229,7 @@ export const AddTableSlideOver = () => {
                     >
                       {successBanner ? (
                         <SuccessBanner
-                          message={"Table successfully created!"}
+                          message={"Column(s) successfully added!"}
                         />
                       ) : null}
                       {errorBanner ? (
@@ -295,10 +242,8 @@ export const AddTableSlideOver = () => {
                         e.preventDefault();
                         setSuccessBanner(false);
                         setErrorBanner(false);
+                        const response = await handleAddColumns(formatData());
 
-                        const response = await handleCreateNewTable(
-                          formatData()
-                        );
                         if (response === true) {
                           setSuccessBanner(true);
                           setTimeout(() => {
@@ -314,7 +259,7 @@ export const AddTableSlideOver = () => {
                         <div className="bg-indigo-700 px-4 py-6 sm:px-6">
                           <div className="flex items-center justify-between">
                             <Dialog.Title className="text-base font-semibold leading-6 text-white">
-                              New Table
+                              New Column(s)
                             </Dialog.Title>
                             <div className="ml-3 flex h-7 items-center">
                               <button
@@ -334,64 +279,9 @@ export const AddTableSlideOver = () => {
                           </div>
                           <div className="mt-1">
                             <p className="text-sm text-indigo-300">
-                              Add columns names, data types and constraints.
+                              Add column names, foreign keys, data types,
+                              defaults and constraints.
                             </p>
-                          </div>
-                        </div>
-                        <div className="flex flex-col justify-between">
-                          <div className=" divide-gray-200 px-4 sm:px-6">
-                            <div className=" pb-2 pt-6">
-                              <div>
-                                <label
-                                  htmlFor="name"
-                                  className="block text-sm font-medium leading-6 text-gray-900"
-                                >
-                                  Name
-                                </label>
-                                <div className="mt-2">
-                                  <input
-                                    type="text"
-                                    name="name"
-                                    id="tableName"
-                                    value={formData.name}
-                                    onChange={(e) => {
-                                      handleInputChange(e);
-                                    }}
-                                    onBlur={() => {
-                                      setBlurs(() => {
-                                        return { ...blurs, name: true };
-                                      });
-                                    }}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  />
-                                  <TableNameInputErrorMessage />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className=" divide-gray-200 px-4 sm:px-6">
-                            <div className=" pb-2 pt-2">
-                              <div>
-                                <label
-                                  htmlFor="description"
-                                  className="block text-sm font-medium leading-6 text-gray-900"
-                                >
-                                  Description
-                                </label>
-                                <div className="mt-2">
-                                  <input
-                                    type="text"
-                                    name="description"
-                                    id="tableDescription"
-                                    value={formData.description}
-                                    onChange={(e) => {
-                                      handleInputChange(e);
-                                    }}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                  />
-                                </div>
-                              </div>
-                            </div>
                           </div>
                         </div>
                         <div className="p-6">
@@ -463,9 +353,8 @@ export const AddTableSlideOver = () => {
                         <button
                           type="submit"
                           className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:text-gray-400 disabled:bg-gray-300"
-                          disabled={!validForm}
                         >
-                          Create Table
+                          Add Column
                         </button>
                       </div>
                     </form>

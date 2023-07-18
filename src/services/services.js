@@ -188,3 +188,31 @@ export const deleteRow = async (url, tableName, pk, jwt) => {
     }
   );
 };
+
+export const addNewColumn = async (formData, url, jwt) => {
+  try {
+    return await axios.post(
+      `${protocol}://${url}:3000/rpc/add_columns_to_table`,
+      formData,
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const addForeignKey = async (formData, url, jwt) => {
+  try {
+    return await axios.post(
+      `${protocol}://${url}:3000/rpc/add_foreign_key_constraint`,
+      formData,
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {
+    return error.response;
+  }
+};
