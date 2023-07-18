@@ -1,11 +1,27 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import { FunctionContexts } from "../utils/fetch_handlers";
+import { ProjectDataContext } from "../states/project_details";
+import { useParams } from "react-router-dom";
 
 export const Projects = () => {
-  const { projects, handleProjectSelect, handleProjectRefresh } =
+  const { projects, getProjects, handleProjectSelect, handleProjectRefresh } =
     React.useContext(FunctionContexts);
+  const { jwt } = React.useContext(ProjectDataContext);
   const [rotate, setRotate] = React.useState(false);
+  const { project } = useParams();
+
+  React.useEffect(() => {
+    if (!jwt || !project) {
+      (async () => {
+        try {
+          await getProjects(sessionStorage.getItem("token"));
+        } catch (error) {
+          console.log("Error: Could not display projects after page refresh");
+        }
+      })();
+    }
+  }, [jwt, getProjects, project]);
 
   const handleRefreshClick = () => {
     setRotate(true);

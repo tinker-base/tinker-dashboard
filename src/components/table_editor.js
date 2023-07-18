@@ -13,13 +13,8 @@ function classNames(...classes) {
 
 export const TableEditor = () => {
   const { table } = useParams();
-  const {
-    setEditRow,
-    setRowData,
-    rowData,
-    columnConstraints,
-    setColumnConstraints,
-  } = React.useContext(SidebarContext);
+  const { setEditRow, setRowData, columnConstraints, setColumnConstraints } =
+    React.useContext(SidebarContext);
   const {
     columns,
     rows,
@@ -33,14 +28,18 @@ export const TableEditor = () => {
   React.useEffect(() => {
     (async () => {
       try {
-        const { data } = await getColumnConstraints(table);
-        const multipleConstraintsCollapsed = collapseMultipleConstraints(data);
-        setColumnConstraints(multipleConstraintsCollapsed);
+        const response = await getColumnConstraints(table);
+        if (response) {
+          const multipleConstraintsCollapsed = collapseMultipleConstraints(
+            response.data
+          );
+          setColumnConstraints(multipleConstraintsCollapsed);
+        }
       } catch (err) {
         console.log("error retrieving table constraints");
       }
     })();
-  }, [table, getColumnConstraints]);
+  }, [table, getColumnConstraints, setColumnConstraints]);
 
   const collapseMultipleConstraints = (constraints) => {
     let seen = {};
@@ -109,6 +108,7 @@ export const TableEditor = () => {
                   {columns.map((column) => {
                     return (
                       <th
+                        key={column.col}
                         scope="col"
                         className={classNames(
                           !highlightedRow && "sticky top-0 z-10 bg-opacity-75",
@@ -120,6 +120,7 @@ export const TableEditor = () => {
                     );
                   })}
                   <th
+                    key="noColumn"
                     scope="col"
                     className={classNames(
                       !highlightedRow && "sticky top-0 z-10 bg-opacity-75",
@@ -137,6 +138,7 @@ export const TableEditor = () => {
                       {columns.map(({ col }) => {
                         return (
                           <td
+                            key={`${col}: ${row[col]}`}
                             className={classNames(
                               personIdx !== rows.length - 1
                                 ? "border-b border-gray-200"

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Tables } from "./sidebars/tables";
 import { LoginContext } from "../states/login";
+import { ProjectDataContext } from "../states/project_details";
 import { ReactComponent as TinkerLogo } from "../images/SVG Vector Files/tinker_logo.svg";
 import { AddTableSlideOver } from "./slideovers/add_table";
 import { AddRowSlideOver } from "./slideovers/add_row";
@@ -11,14 +12,21 @@ import { SidebarNav } from "./sidebars/sidebar_nav";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const { login } = React.useContext(LoginContext);
+  const { setLogin } = React.useContext(LoginContext);
+  const { setJWT } = useContext(ProjectDataContext);
   const { project } = useParams();
 
   React.useEffect(() => {
-    if (!login) {
+    const token = sessionStorage.getItem("token");
+    setJWT(token);
+
+    if (!token) {
       navigate("/login");
+    } else {
+      setLogin(true);
     }
-  });
+  }, [navigate, setJWT, setLogin]);
+
   return (
     <>
       <div>

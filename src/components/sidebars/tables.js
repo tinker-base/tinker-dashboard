@@ -15,6 +15,7 @@ import {
 import { ShowModalContext } from "../../states/show_modals";
 import { DeleteTableModal } from "../modals/delete_table";
 import { FunctionContexts } from "../../utils/fetch_handlers";
+import { ProjectDataContext } from "../../states/project_details";
 import { ToggleAddTableSlideOver } from "../../utils/slideover_handlers";
 
 function classNames(...classes) {
@@ -22,18 +23,53 @@ function classNames(...classes) {
 }
 
 export const Tables = () => {
-  const { table } = useParams();
+  const { project, table } = useParams();
   const signOut = useSignOut();
   const { showDeleteTable, setShowDeleteTable } =
     React.useContext(ShowModalContext);
-  const { schemas, tables, getTableRows } = React.useContext(FunctionContexts);
-
+  const { getSchemas, schemas, getTables, tables, getTableRows } =
+    React.useContext(FunctionContexts);
+  const { jwt, setProjectURL } = React.useContext(ProjectDataContext);
   const [selectedTable, setSelectedTable] = React.useState("");
 
   const userNavigation = [
     { name: "Your profile", href: () => {} },
     { name: "Sign out", href: signOut },
   ];
+
+  React.useEffect(() => {
+    if (!jwt && project) {
+      (async () => {
+        try {
+          setProjectURL(sessionStorage.getItem("projectIP"));
+
+          await persistTableData(
+            sessionStorage.getItem("projectIP"),
+            sessionStorage.getItem("token")
+          );
+        } catch (e) {
+          console.log(
+            "Error: Could not retrieve tables and schema after refresh."
+          );
+        }
+      })();
+    }
+  }, []);
+
+  async function persistTableData(sessionIP, sessionToken) {
+    if (table) {
+      return Promise.all([
+        getSchemas(sessionIP, sessionToken),
+        getTables(sessionIP, "public", sessionToken),
+        getTableRows(table, sessionIP, sessionToken),
+      ]);
+    } else {
+      return Promise.all([
+        await getSchemas(sessionIP, sessionToken),
+        await getTables(sessionIP, "public", sessionToken),
+      ]);
+    }
+  }
 
   const confirmTableDelete = () => {
     setShowDeleteTable(true);

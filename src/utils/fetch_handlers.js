@@ -20,6 +20,7 @@ import {
 } from "../services/services";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../states/login";
+import { ProjectDataContext } from "../states/project_details";
 
 export const FunctionContexts = React.createContext();
 
@@ -27,11 +28,11 @@ export const FunctionsShared = ({ children }) => {
   const navigate = useNavigate();
 
   const { setLogin } = React.useContext(LoginContext);
+  const { jwt, setJWT, projectURL, setProjectURL } =
+    React.useContext(ProjectDataContext);
 
   const [username, setUsername] = React.useState("");
-  const [jwt, setJWT] = React.useState();
   const [projects, setProjects] = React.useState([]);
-  const [projectURL, setProjectURL] = React.useState("");
   const [tables, setTables] = React.useState([]);
   const [schemas, setSchemas] = React.useState([]);
   const [rows, setRows] = React.useState([]);
@@ -46,18 +47,22 @@ export const FunctionsShared = ({ children }) => {
     }
   };
 
-  const getTables = async (url, schema = "public") => {
+  const getTables = async (url, schema = "public", localStorageJWT) => {
     try {
-      const response = await getAllTablesInSchema(url, schema, jwt);
+      const response = await getAllTablesInSchema(
+        url,
+        schema,
+        localStorageJWT || jwt
+      );
       setTables(response.data.map((tableObj) => tableObj.table_name));
     } catch (error) {
       console.log("Unable to fetch tables", error);
     }
   };
 
-  const getSchemas = async (url) => {
+  const getSchemas = async (url, localStorageJWT) => {
     try {
-      const response = await getAllSchemas(url, jwt);
+      const response = await getAllSchemas(url, localStorageJWT || jwt);
       setSchemas(
         response.data
           .filter((schemaObj) => {
@@ -75,11 +80,19 @@ export const FunctionsShared = ({ children }) => {
     }
   };
 
-  const getTableRows = async (tableTitle) => {
+  const getTableRows = async (tableTitle, localStorageURL, localStorageJWT) => {
     try {
-      const columns = await getColumns(projectURL, tableTitle, jwt);
+      const columns = await getColumns(
+        localStorageURL || projectURL,
+        tableTitle,
+        localStorageJWT || jwt
+      );
       setColumns(columns.data);
-      const response = await getRows(projectURL, tableTitle, jwt);
+      const response = await getRows(
+        localStorageURL || projectURL,
+        tableTitle,
+        localStorageJWT || jwt
+      );
       setRows(response.data);
     } catch (error) {
       console.log("unable to get rows from table");
@@ -90,6 +103,7 @@ export const FunctionsShared = ({ children }) => {
     setProjectURL(project.ip);
     getSchemas(project.ip);
     getTables(project.ip);
+    sessionStorage.setItem("projectIP", project.ip);
   };
 
   const handleLogin = async (credentials) => {
@@ -100,6 +114,7 @@ export const FunctionsShared = ({ children }) => {
         setJWT(data.token);
         const response = await getUsername(credentials, data.token);
         setUsername(response.data);
+        sessionStorage.setItem("token", data.token);
         getProjects(data.token);
         navigate("/dashboard");
         return data;
@@ -209,18 +224,12 @@ export const FunctionsShared = ({ children }) => {
   };
 
   const editRowInTable = async (tableName, rowData, pk) => {
-    const response = await updateRowInTable(
-      projectURL,
-      tableName,
-      rowData,
-      pk,
-      jwt
-    );
+    await updateRowInTable(projectURL, tableName, rowData, pk, jwt);
     await getTableRows(tableName);
   };
 
   const deleteRowInTable = async (tableName, pk) => {
-    const response = await deleteRow(projectURL, tableName, pk, jwt);
+    await deleteRow(projectURL, tableName, pk, jwt);
     await getTableRows(tableName);
   };
 
