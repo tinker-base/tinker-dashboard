@@ -25,7 +25,7 @@ export const Dashboard = () => {
     } else {
       setLogin(true);
     }
-  }, [navigate, setJWT, setLogin]);
+  }, [navigate, setLogin]);
 
   return (
     <>
