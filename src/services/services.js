@@ -150,7 +150,7 @@ export const createNewTable = async (formData, url, jwt) => {
 export const deleteTable = async (tableName, url, jwt) => {
   try {
     return await axios.post(
-      `${protocol}s://${url}:3000/rpc/delete_table`,
+      `${protocol}://${url}:3000/rpc/delete_table`,
       { table_name: tableName },
       {
         headers: { Authorization: `Bearer ${jwt}` },

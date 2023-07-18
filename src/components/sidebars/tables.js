@@ -160,7 +160,7 @@ export const Tables = () => {
                                 : "text-gray-700",
                               "group flex items-center px-4 py-2 text-sm"
                             )}
-                            data-tableName={tableName}
+                            data-tablename={tableName}
                             onClick={(e) => {
                               setSelectedTable(
                                 e.currentTarget.dataset.tableName

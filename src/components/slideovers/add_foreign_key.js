@@ -63,11 +63,11 @@ export const ForeignKeySlideOver = ({ colObj, setForeignKeys }) => {
   };
 
   const formatForeignKeyString = () => {
-    console.log("format FK");
     setForeignKeys((prev) =>
-      prev.concat(
-        `FOREIGN KEY (${colObj.name}) REFERENCES ${selectedSchema}.${selectedTable}(${selectedCol})`
-      )
+      prev.concat({
+        id: colObj.id,
+        command: `FOREIGN KEY (${colObj.name}) REFERENCES ${selectedSchema}.${selectedTable}(${selectedCol})`,
+      })
     );
   };
 

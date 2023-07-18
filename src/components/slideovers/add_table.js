@@ -118,8 +118,14 @@ export const AddTableSlideOver = () => {
       }
       result.push(currentCol.join(" "));
     });
-    result.push(foreignKeys);
+    result.push(stringifyForeignKeys());
     return result.flat();
+  };
+
+  const stringifyForeignKeys = () => {
+    const result = [];
+    foreignKeys.forEach((fk) => result.push(fk.command));
+    return result;
   };
 
   const findKeyCol = () => {
@@ -152,6 +158,8 @@ export const AddTableSlideOver = () => {
   const deleteColumn = (id) => {
     const filtered = columns.filter((col) => String(col.id) !== String(id));
     setColumns(filtered);
+    const fileterFK = foreignKeys.filter((fk) => String(fk.id) !== String(id));
+    setForeignKeys(fileterFK);
   };
 
   const closeAndResetSlideOver = () => {
