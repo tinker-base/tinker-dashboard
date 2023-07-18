@@ -1,5 +1,5 @@
 import React from "react";
-import { SchemaSelect } from "../schema_select";
+import { SchemaSelect } from "../selects/schema_select";
 import { Link, useParams } from "react-router-dom";
 import { Menu, Transition } from "@headlessui/react";
 import { useSignOut } from "../../utils/custom_hooks/signOut";
@@ -29,6 +29,7 @@ export const Tables = () => {
   const { schemas, tables, getTableRows } = React.useContext(FunctionContexts);
 
   const [selectedTable, setSelectedTable] = React.useState("");
+  const [selectedSchema, setSelectedSchema] = React.useState("public");
 
   const userNavigation = [
     { name: "Your profile", href: () => {} },
@@ -53,7 +54,13 @@ export const Tables = () => {
         Dashboard
       </Link>
       <div className="border-b-2 border-indigo-100 pb-4"></div>
-      <SchemaSelect schemas={schemas} />
+      <div className="text-indigo-200">
+        <SchemaSelect
+          schemas={schemas}
+          selectedSchema={selectedSchema}
+          setSelectedSchema={setSelectedSchema}
+        />
+      </div>
       <div className="border-b-2 border-indigo-100 my-6"></div>
 
       <div className="flex text-white pb-6 justify-between">
@@ -210,7 +217,7 @@ export const Tables = () => {
           </Transition>
           <Menu.Button className="-m-1.5 flex items-center p-1.5">
             <span className="sr-only">Open user menu</span>
-            <span className="hidden lg:flex lg:items-center">
+            <span className="flex items-center">
               <span className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white">
                 <Cog6ToothIcon
                   className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"

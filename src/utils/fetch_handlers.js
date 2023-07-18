@@ -208,13 +208,7 @@ export const FunctionsShared = ({ children }) => {
   };
 
   const editRowInTable = async (tableName, rowData, pk) => {
-    const response = await updateRowInTable(
-      projectURL,
-      tableName,
-      rowData,
-      pk,
-      jwt
-    );
+    await updateRowInTable(projectURL, tableName, rowData, pk, jwt);
     await getTableRows(tableName);
   };
 
