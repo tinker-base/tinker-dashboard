@@ -30,7 +30,12 @@ export const ForeignKeySlideOver = ({ colObj, setForeignKeys }) => {
 
   const fetchCols = async () => {
     try {
-      const { data } = await getColumns(projectURL, selectedTable, jwt);
+      const { data } = await getColumns(
+        projectURL,
+        selectedSchema,
+        selectedTable,
+        jwt
+      );
       setCurrentCols(data);
     } catch (error) {
       console.log("error getting columns: ", error);

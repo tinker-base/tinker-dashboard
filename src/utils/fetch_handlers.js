@@ -19,6 +19,7 @@ import {
   deleteRow,
   addNewColumn,
   addForeignKey,
+  createSchema,
 } from "../services/services";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../states/login";
@@ -39,6 +40,7 @@ export const FunctionsShared = ({ children }) => {
   const [schemas, setSchemas] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [columns, setColumns] = React.useState([]);
+  const [selectedSchema, setSelectedSchema] = React.useState("public");
 
   const getProjects = async (token = jwt) => {
     try {
@@ -86,12 +88,14 @@ export const FunctionsShared = ({ children }) => {
     try {
       const columns = await getColumns(
         localStorageURL || projectURL,
+        selectedSchema || "public",
         tableTitle,
         localStorageJWT || jwt
       );
       setColumns(columns.data);
       const response = await getRows(
         localStorageURL || projectURL,
+        selectedSchema || "public",
         tableTitle,
         localStorageJWT || jwt
       );
@@ -212,13 +216,18 @@ export const FunctionsShared = ({ children }) => {
   };
 
   const insertRowInTable = async (tableName, rowData) => {
-    await insertInTable(projectURL, tableName, rowData, jwt);
+    await insertInTable(projectURL, selectedSchema, tableName, rowData, jwt);
     await getTableRows(tableName);
   };
 
   const columnConstraintsForTable = async (tableName) => {
     try {
-      const response = await getColumnConstraints(projectURL, tableName, jwt);
+      const response = await getColumnConstraints(
+        projectURL,
+        selectedSchema,
+        tableName,
+        jwt
+      );
       return response;
     } catch (e) {
       console.log("Error: Could not display table constraints");
@@ -226,7 +235,14 @@ export const FunctionsShared = ({ children }) => {
   };
 
   const editRowInTable = async (tableName, rowData, pk) => {
-    await updateRowInTable(projectURL, tableName, rowData, pk, jwt);
+    await updateRowInTable(
+      projectURL,
+      selectedSchema,
+      tableName,
+      rowData,
+      pk,
+      jwt
+    );
     await getTableRows(tableName);
   };
 
@@ -241,9 +257,19 @@ export const FunctionsShared = ({ children }) => {
       const { data } = await addNewColumn(formData, projectURL, jwt);
 
       if (data === true) {
-        const colRes = await getColumns(projectURL, formData.table_name, jwt);
+        const colRes = await getColumns(
+          projectURL,
+          selectedSchema,
+          formData.table_name,
+          jwt
+        );
         setColumns(colRes.data);
-        const rowRes = await getRows(projectURL, formData.table_name, jwt);
+        const rowRes = await getRows(
+          projectURL,
+          selectedSchema,
+          formData.table_name,
+          jwt
+        );
         setRows(rowRes.data);
       }
       return data;
@@ -260,6 +286,18 @@ export const FunctionsShared = ({ children }) => {
     }
   };
 
+  const handleAddNewSchema = async (formData) => {
+    try {
+      const { data } = await createSchema(formData, projectURL, jwt);
+      if (data) {
+        await getSchemas(projectURL, jwt);
+      }
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <FunctionContexts.Provider
       value={{
@@ -269,6 +307,8 @@ export const FunctionsShared = ({ children }) => {
         setProjects,
         projectURL,
         setProjectURL,
+        selectedSchema,
+        setSelectedSchema,
         tables,
         setTables,
         schemas,
@@ -293,6 +333,7 @@ export const FunctionsShared = ({ children }) => {
         deleteRowInTable,
         handleAddColumns,
         handleAddForeignKey,
+        handleAddNewSchema,
       }}
     >
       {children}

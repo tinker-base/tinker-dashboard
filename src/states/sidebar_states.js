@@ -12,6 +12,7 @@ export const SidebarStates = ({ children }) => {
   const [showForeignKey, setShowForeignKey] = React.useState(false);
   const [showAddCol, setShowAddCol] = React.useState(false);
   const [showEditCol, setShowEditCol] = React.useState(false);
+  const [showAddSchema, setShowAddSchema] = React.useState(false);
   return (
     <SidebarContext.Provider
       value={{
@@ -31,7 +32,10 @@ export const SidebarStates = ({ children }) => {
         setShowForeignKey,
         showAddCol,
         setShowAddCol,
-        showEditCol, setShowEditCol
+        showEditCol,
+        setShowEditCol,
+        showAddSchema,
+        setShowAddSchema,
       }}
     >
       {children}

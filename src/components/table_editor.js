@@ -121,7 +121,7 @@ export const TableEditor = () => {
                         key={column.col}
                         scope="col"
                         className={classNames(
-                          !highlightedRow && "sticky top-0 z-10 bg-opacity-75",
+                          !highlightedRow && "sticky top-0 bg-opacity-75",
                           "border-b border-gray-300 bg-white py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
                         )}
                       >
@@ -136,7 +136,7 @@ export const TableEditor = () => {
                     key="noColumn"
                     scope="col"
                     className={classNames(
-                      !highlightedRow && "sticky top-0 z-10 bg-opacity-75",
+                      !highlightedRow && "sticky top-0 bg-opacity-75",
                       "border-b border-gray-300 bg-white py-3.5 pl-3 pr-4 backdrop-blur backdrop-filter sm:pr-6 lg:pr-8"
                     )}
                   >
