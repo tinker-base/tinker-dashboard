@@ -32,7 +32,7 @@ export const Projects = () => {
   };
 
   return (
-    <div className="pl-10">
+    <div className="pl-10 pt-10">
       <div className="flex content-center">
         <h3 className="font-bold text-lg text-indigo-900 pr-6 self-center">
           Your Current Projects

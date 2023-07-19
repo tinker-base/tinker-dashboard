@@ -24,3 +24,8 @@ export const ToggleAddSchemaSlideOver = () => {
   const { showAddSchema, setShowAddSchema } = React.useContext(SidebarContext);
   return () => setShowAddSchema(!showAddSchema);
 };
+
+export const ToggleEditTableSlideOver = () => {
+  const { showEditTable, setShowEditTable } = React.useContext(SidebarContext);
+  return () => setShowEditTable(!showEditTable);
+};

@@ -137,6 +137,11 @@ export const getAllSchemas = async (url, jwt) => {
   }
 };
 
+//formData = {schema_name,
+// table_name,
+// columns: [],
+// primary_key_column}
+
 export const createNewTable = async (formData, url, jwt) => {
   try {
     return await axios.post(
@@ -164,6 +169,22 @@ export const deleteTable = async (schema, tableName, url, jwt) => {
     return error.response;
   }
 };
+
+// formData= {schema_name: string, old_table_name: string, new_table_name: string}
+export const editTable = async (formData, url, jwt) => {
+  try {
+    return axios.post(
+      `${protocol}://${url}:3000/rpc/update_table_name`,
+      formData,
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {
+    return error.message;
+  }
+};
+
 export const insertInTable = async (url, schema, tableName, rowData, jwt) => {
   return await axios.post(`${protocol}://${url}:3000/${tableName}`, rowData, {
     headers: { Authorization: `Bearer ${jwt}`, "Content-Profile": schema },
@@ -187,11 +208,11 @@ export const updateRowInTable = async (
   );
 };
 
-export const deleteRow = async (url, tableName, pk, jwt) => {
+export const deleteRow = async (url, schema, tableName, pk, jwt) => {
   return await axios.delete(
     `${protocol}://${url}:3000/${tableName}?${pk.column}=eq.${pk.value}`,
     {
-      headers: { Authorization: `Bearer ${jwt}` },
+      headers: { Authorization: `Bearer ${jwt}`, "Content-Profile": schema },
     }
   );
 };
@@ -235,5 +256,48 @@ export const createSchema = async (formData, url, jwt) => {
     );
   } catch (error) {
     return error.response;
+  }
+};
+
+// formData = {p_table_name: string, p_comment: string}
+export const addTableDescription = async (formData, url, jwt) => {
+  try {
+    return axios.post(
+      `${protocol}://${url}:3000/rpc/add_table_comment`,
+      formData,
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {
+    return error.message;
+  }
+};
+
+export const viewTableDescription = async (formData, url, jwt) => {
+  try {
+    return axios.post(
+      `${protocol}://${url}:3000/rpc/view_table_description`,
+      formData,
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {
+    return error.message;
+  }
+};
+// formData = {p_schema_name string, p_table_name string, new_description string}
+export const updateTableDescription = async (formData, url, jwt) => {
+  try {
+    return axios.post(
+      `${protocol}://${url}:3000/rpc/update_table_description`,
+      formData,
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {
+    return error.message;
   }
 };
