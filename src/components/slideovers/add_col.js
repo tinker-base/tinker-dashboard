@@ -2,7 +2,6 @@ import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { LinkIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { SidebarContext } from "../../states/sidebar_states";
-import { validTableName, whiteSpace } from "../../utils/helpers";
 import { DataTypeSelect } from "../selects/data_type_select";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { SuccessBanner } from "../banners/success_banner";
@@ -82,7 +81,8 @@ const Column = ({
 export const AddColumnSlideOver = () => {
   const { table: columnName } = useParams();
   const { showAddCol, setShowAddCol } = React.useContext(SidebarContext);
-  const { handleAddColumns } = React.useContext(FunctionContexts);
+  const { handleAddColumns, selectedSchema } =
+    React.useContext(FunctionContexts);
 
   // const [formData, setFormData] = React.useState({ name: "", description: "" });
   const [columns, setColumns] = React.useState([
@@ -120,18 +120,13 @@ export const AddColumnSlideOver = () => {
       }
       result.push(currentCol.join(" "));
     });
-    // result.push(stringifyForeignKeys());
+
     return result.join(", ");
   };
 
-  // const stringifyForeignKeys = () => {
-  //   const result = [];
-  //   foreignKeys.forEach((fk) => result.push(fk.command));
-  //   return result;
-  // };
-
   const formatData = () => {
     const result = {
+      schema_name: selectedSchema,
       table_name: columnName,
       column_definitions: stringifyColumns(),
     };

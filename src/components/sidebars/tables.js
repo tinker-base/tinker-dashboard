@@ -16,7 +16,10 @@ import { ShowModalContext } from "../../states/show_modals";
 import { DeleteTableModal } from "../modals/delete_table";
 import { FunctionContexts } from "../../utils/fetch_handlers";
 import { ProjectDataContext } from "../../states/project_details";
-import { ToggleAddTableSlideOver } from "../../utils/slideover_handlers";
+import {
+  ToggleAddTableSlideOver,
+  ToggleAddSchemaSlideOver,
+} from "../../utils/slideover_handlers";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -27,11 +30,19 @@ export const Tables = () => {
   const signOut = useSignOut();
   const { showDeleteTable, setShowDeleteTable } =
     React.useContext(ShowModalContext);
-  const { getSchemas, schemas, getTables, tables, getTableRows } =
-    React.useContext(FunctionContexts);
+  const {
+    projectURL,
+    getSchemas,
+    schemas,
+    getTables,
+    tables,
+    getTableRows,
+    selectedSchema,
+    setSelectedSchema,
+  } = React.useContext(FunctionContexts);
   const { jwt, setProjectURL } = React.useContext(ProjectDataContext);
+
   const [selectedTable, setSelectedTable] = React.useState("");
-  const [selectedSchema, setSelectedSchema] = React.useState("public");
 
   const userNavigation = [
     { name: "Your profile", href: () => {} },
@@ -76,6 +87,15 @@ export const Tables = () => {
     setShowDeleteTable(true);
   };
 
+  React.useEffect(() => {
+    const fetchTables = async () => {
+      try {
+        await getTables(projectURL, selectedSchema, jwt);
+      } catch (error) {}
+    };
+    fetchTables();
+  }, [selectedSchema]);
+
   return (
     <>
       {showDeleteTable ? <DeleteTableModal tableName={selectedTable} /> : null}
@@ -90,12 +110,19 @@ export const Tables = () => {
         Dashboard
       </Link>
       <div className="border-b-2 border-indigo-100 pb-4"></div>
-      <div className="text-indigo-200">
-        <SchemaSelect
-          schemas={schemas}
-          selectedSchema={selectedSchema}
-          setSelectedSchema={setSelectedSchema}
-        />
+      <div className="flex justify-between ">
+        <div className="text-indigo-200 w-full pr-4">
+          <SchemaSelect
+            schemas={schemas}
+            selectedSchema={selectedSchema}
+            setSelectedSchema={setSelectedSchema}
+          />
+        </div>
+        {/* <PlusIcon
+          className="h-6 w-6 shrink-0 self-end text-indigo-200 hover:bg-indigo-700 border rounded-full border-indigo-200 hover:text-white hover:border-white"
+          onClick={ToggleAddSchemaSlideOver()}
+          aria-hidden="true"
+        /> */}
       </div>
       <div className="border-b-2 border-indigo-100 my-6"></div>
 
@@ -116,8 +143,8 @@ export const Tables = () => {
           aria-hidden="true"
         />
       </div>
-      <div className="overflow-auto">
-        <ul className="flex flex-col gap-y-1">
+      <div className="">
+        <ul className="flex flex-col gap-y-1 overflow-auto h-96">
           {tables.map((tableName) => (
             <li
               key={tableName}
@@ -129,7 +156,7 @@ export const Tables = () => {
             >
               <Link
                 to={`tables/${tableName}`}
-                className="w-full group flex gap-x-3 text-sm leading-6 font-semibold"
+                className="truncate w-full group flex gap-x-3 text-sm leading-6 font-semibold"
               >
                 {tableName}
               </Link>

@@ -80,7 +80,8 @@ const Column = ({
 
 export const AddTableSlideOver = () => {
   const { addTable, setAddTable } = React.useContext(SidebarContext);
-  const { handleCreateNewTable } = React.useContext(FunctionContexts);
+  const { handleCreateNewTable, selectedSchema } =
+    React.useContext(FunctionContexts);
   // const { showForeignKey } = React.useContext(SidebarContext);
 
   const [formData, setFormData] = React.useState({ name: "", description: "" });
@@ -122,15 +123,9 @@ export const AddTableSlideOver = () => {
       }
       result.push(currentCol.join(" "));
     });
-    // result.push(stringifyForeignKeys());
+
     return result.flat();
   };
-
-  // const stringifyForeignKeys = () => {
-  //   const result = [];
-  //   foreignKeys.forEach((fk) => result.push(fk.command));
-  //   return result;
-  // };
 
   const findKeyCol = () => {
     const keyCol = columns.find((col) => col.primary === true);
@@ -139,6 +134,7 @@ export const AddTableSlideOver = () => {
 
   const formatData = () => {
     const result = {
+      schema_name: selectedSchema,
       table_name: formData.name,
       columns: stringifyColumns(),
       primary_key_column: findKeyCol(),
@@ -334,7 +330,8 @@ export const AddTableSlideOver = () => {
                           </div>
                           <div className="mt-1">
                             <p className="text-sm text-indigo-300">
-                              Add columns names, data types and constraints.
+                              Add column names, foreign keys, data types,
+                              defaults and constraints.
                             </p>
                           </div>
                         </div>

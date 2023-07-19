@@ -82,21 +82,21 @@ export const getUsername = async (credentials, jwt) => {
 
 // Project specific routes
 
-export const getRows = async (url, table, jwt) => {
+export const getRows = async (url, schema = "public", table, jwt) => {
   try {
     return await axios.get(`${protocol}://${url}:3000/${table}`, {
-      headers: { Authorization: `Bearer ${jwt}` },
+      headers: { Authorization: `Bearer ${jwt}`, "Accept-Profile": schema },
     });
   } catch (error) {
     return error.response;
   }
 };
 
-export const getColumns = async (url, table, jwt) => {
+export const getColumns = async (url, schema, table, jwt) => {
   try {
     return await axios.post(
       `${protocol}://${url}:3000/rpc/get_columns_from_table`,
-      { p_table_name: table },
+      { schema_name: schema, p_table_name: table },
       {
         headers: { Authorization: `Bearer ${jwt}` },
       }
@@ -104,11 +104,11 @@ export const getColumns = async (url, table, jwt) => {
   } catch (error) {}
 };
 
-export const getColumnConstraints = async (url, table, jwt) => {
+export const getColumnConstraints = async (url, schema, table, jwt) => {
   try {
     return await axios.post(
       `${protocol}://${url}:3000/rpc/get_column_constraints`,
-      { p_table_name: table },
+      { schema_name: schema, p_table_name: table },
       {
         headers: { Authorization: `Bearer ${jwt}` },
       }
@@ -151,11 +151,11 @@ export const createNewTable = async (formData, url, jwt) => {
   }
 };
 
-export const deleteTable = async (tableName, url, jwt) => {
+export const deleteTable = async (schema, tableName, url, jwt) => {
   try {
     return await axios.post(
       `${protocol}://${url}:3000/rpc/delete_table`,
-      { table_name: tableName },
+      { schema_name: schema, table_name: tableName },
       {
         headers: { Authorization: `Bearer ${jwt}` },
       }
@@ -164,18 +164,25 @@ export const deleteTable = async (tableName, url, jwt) => {
     return error.response;
   }
 };
-export const insertInTable = async (url, tableName, rowData, jwt) => {
+export const insertInTable = async (url, schema, tableName, rowData, jwt) => {
   return await axios.post(`${protocol}://${url}:3000/${tableName}`, rowData, {
-    headers: { Authorization: `Bearer ${jwt}` },
+    headers: { Authorization: `Bearer ${jwt}`, "Content-Profile": schema },
   });
 };
 
-export const updateRowInTable = async (url, tableName, rowData, pk, jwt) => {
+export const updateRowInTable = async (
+  url,
+  schema,
+  tableName,
+  rowData,
+  pk,
+  jwt
+) => {
   return await axios.put(
     `${protocol}://${url}:3000/${tableName}?${pk.column}=eq.${pk.value}`,
     rowData,
     {
-      headers: { Authorization: `Bearer ${jwt}` },
+      headers: { Authorization: `Bearer ${jwt}`, "Content-Profile": schema },
     }
   );
 };
@@ -207,6 +214,20 @@ export const addForeignKey = async (formData, url, jwt) => {
   try {
     return await axios.post(
       `${protocol}://${url}:3000/rpc/add_foreign_key_constraint`,
+      formData,
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+      }
+    );
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const createSchema = async (formData, url, jwt) => {
+  try {
+    return await axios.post(
+      `${protocol}://${url}:3000/rpc/create_schema`,
       formData,
       {
         headers: { Authorization: `Bearer ${jwt}` },
