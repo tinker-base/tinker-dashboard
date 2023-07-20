@@ -80,7 +80,7 @@ const Column = ({
 
 export const EditColumnSlideOver = () => {
   const { table: columnName } = useParams();
-  const { showAddCol, setShowAddCol } = React.useContext(SidebarContext);
+  const { showEditCol, setShowEditCol } = React.useContext(SidebarContext);
   const { handleAddColumns } = React.useContext(FunctionContexts);
 
   // const [formData, setFormData] = React.useState({ name: "", description: "" });
@@ -158,7 +158,7 @@ export const EditColumnSlideOver = () => {
   };
 
   const closeAndResetSlideOver = () => {
-    setShowAddCol(false);
+    setShowEditCol(false);
     setColumns([
       {
         id: 1,
@@ -196,7 +196,7 @@ export const EditColumnSlideOver = () => {
 
   return (
     <>
-      <Transition.Root show={showAddCol} as={React.Fragment}>
+      <Transition.Root show={showEditCol} as={React.Fragment}>
         <Dialog
           as="div"
           className="relative z-50"
@@ -258,7 +258,7 @@ export const EditColumnSlideOver = () => {
                         <div className="bg-indigo-700 px-4 py-6 sm:px-6">
                           <div className="flex items-center justify-between">
                             <Dialog.Title className="text-base font-semibold leading-6 text-white">
-                              New Column(s)
+                              Edit Column
                             </Dialog.Title>
                             <div className="ml-3 flex h-7 items-center">
                               <button
@@ -278,7 +278,7 @@ export const EditColumnSlideOver = () => {
                           </div>
                           <div className="mt-1">
                             <p className="text-sm text-indigo-300">
-                              Add column names, foreign keys, data types,
+                              Edit column names, foreign keys, data types,
                               defaults and constraints.
                             </p>
                           </div>
@@ -324,7 +324,7 @@ export const EditColumnSlideOver = () => {
                             })}
                           </div>
 
-                          <button
+                          {/* <button
                             className="mt-4 flex content-center hover:bg-indigo-200 text-indigo-700 "
                             onClick={(e) => {
                               e.preventDefault();
@@ -336,7 +336,7 @@ export const EditColumnSlideOver = () => {
                               aria-hidden="true"
                             />
                             Add Column
-                          </button>
+                          </button> */}
                         </div>
                       </div>
                       <div className="flex flex-shrink-0 justify-end px-4 py-4">
@@ -353,7 +353,7 @@ export const EditColumnSlideOver = () => {
                           type="submit"
                           className="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:text-gray-400 disabled:bg-gray-300"
                         >
-                          Add Column
+                          Save
                         </button>
                       </div>
                     </form>

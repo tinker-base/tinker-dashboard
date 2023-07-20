@@ -61,11 +61,11 @@ const Column = ({
         <input
           className=""
           name="primary"
-          type="radio"
+          type="checkbox"
           onChange={(e) => {
             onPrimaryRadioClick(column.id, e);
           }}
-          checked={column.primary}
+          selected={column.primary}
         />
       </div>
       <div className="flex justify-center col-span-1 cursor-pointer hover:text-gray-600">
@@ -182,9 +182,14 @@ export const AddColumnSlideOver = () => {
   };
 
   const togglePrimaryRadio = (id) => {
+    console.log(id);
     setColumns((prev) => {
       return prev.map((col) => {
-        col.id === id ? (col.primary = true) : (col.primary = false);
+        console.log(col.id === id);
+        if (col.id === id) {
+          col.primary = !col.primary;
+        }
+        console.log(col);
         return col;
       });
     });
