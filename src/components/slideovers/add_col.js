@@ -182,14 +182,11 @@ export const AddColumnSlideOver = () => {
   };
 
   const togglePrimaryRadio = (id) => {
-    console.log(id);
     setColumns((prev) => {
       return prev.map((col) => {
-        console.log(col.id === id);
         if (col.id === id) {
           col.primary = !col.primary;
         }
-        console.log(col);
         return col;
       });
     });
