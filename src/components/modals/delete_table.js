@@ -4,10 +4,11 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { ShowModalContext } from "../../states/show_modals";
 import { FunctionContexts } from "../../utils/fetch_handlers";
 
-export const DeleteTableModal = ({ tableName }) => {
+export const DeleteTableModal = () => {
   const { showDeleteTable, setShowDeleteTable } =
     React.useContext(ShowModalContext);
-  const { handleDeleteTable } = React.useContext(FunctionContexts);
+  const { handleDeleteTable, selectedTable: tableName } =
+    React.useContext(FunctionContexts);
 
   const cancelButtonRef = React.useRef(null);
 

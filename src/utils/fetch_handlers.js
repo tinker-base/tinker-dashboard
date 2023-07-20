@@ -20,6 +20,10 @@ import {
   addNewColumn,
   addForeignKey,
   createSchema,
+  editTable,
+  addTableDescription,
+  viewTableDescription,
+  updateTableDescription,
 } from "../services/services";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../states/login";
@@ -41,6 +45,9 @@ export const FunctionsShared = ({ children }) => {
   const [rows, setRows] = React.useState([]);
   const [columns, setColumns] = React.useState([]);
   const [selectedSchema, setSelectedSchema] = React.useState("public");
+  // const [selectedEditTable, setSelectedEditTable] = React.useState("");
+  const [selectedTable, setSelectedTable] = React.useState("");
+  const [tableDescription, setTableDescription] = React.useState("");
 
   const getProjects = async (token = jwt) => {
     try {
@@ -51,7 +58,7 @@ export const FunctionsShared = ({ children }) => {
     }
   };
 
-  const getTables = async (url, schema = "public", localStorageJWT) => {
+  const getTables = async (url, schema = selectedSchema, localStorageJWT) => {
     try {
       const response = await getAllTablesInSchema(
         url,
@@ -88,14 +95,14 @@ export const FunctionsShared = ({ children }) => {
     try {
       const columns = await getColumns(
         localStorageURL || projectURL,
-        selectedSchema || "public",
+        selectedSchema,
         tableTitle,
         localStorageJWT || jwt
       );
       setColumns(columns.data);
       const response = await getRows(
         localStorageURL || projectURL,
-        selectedSchema || "public",
+        selectedSchema,
         tableTitle,
         localStorageJWT || jwt
       );
@@ -205,7 +212,12 @@ export const FunctionsShared = ({ children }) => {
 
   const handleDeleteTable = async (tableName) => {
     try {
-      const response = await deleteTable(tableName, projectURL, jwt);
+      const response = await deleteTable(
+        selectedSchema,
+        tableName,
+        projectURL,
+        jwt
+      );
       if (response.data === true) {
         getTables(projectURL);
       }
@@ -247,12 +259,11 @@ export const FunctionsShared = ({ children }) => {
   };
 
   const deleteRowInTable = async (tableName, pk) => {
-    await deleteRow(projectURL, tableName, pk, jwt);
+    await deleteRow(projectURL, selectedSchema, tableName, pk, jwt);
     await getTableRows(tableName);
   };
 
   const handleAddColumns = async (formData) => {
-    console.log(formData.table_name);
     try {
       const { data } = await addNewColumn(formData, projectURL, jwt);
 
@@ -298,6 +309,46 @@ export const FunctionsShared = ({ children }) => {
     }
   };
 
+  const handleEditTable = async (formData) => {
+    try {
+      const { data } = await editTable(formData, projectURL, jwt);
+      if (data) {
+        await getTables(projectURL, selectedSchema);
+      }
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAddTableDescription = async (formData) => {
+    try {
+      const { data } = await addTableDescription(formData, projectURL, jwt);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getTableDescription = async (schema, tableName) => {
+    const formData = { p_schema_name: schema, p_table_name: tableName };
+    try {
+      const { data } = await viewTableDescription(formData, projectURL, jwt);
+      setTableDescription(data);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const editTableDescription = async (formData) => {
+    try {
+      const { data } = await updateTableDescription(formData, projectURL, jwt);
+      getTableDescription(selectedSchema, selectedTable);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <FunctionContexts.Provider
       value={{
@@ -334,6 +385,14 @@ export const FunctionsShared = ({ children }) => {
         handleAddColumns,
         handleAddForeignKey,
         handleAddNewSchema,
+        handleEditTable,
+        selectedTable,
+        setSelectedTable,
+        handleAddTableDescription,
+        tableDescription,
+        setTableDescription,
+        getTableDescription,
+        editTableDescription,
       }}
     >
       {children}

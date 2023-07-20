@@ -11,7 +11,8 @@ import { EditRowSlideOver } from "./slideovers/edit_row";
 import { SidebarNav } from "./sidebars/sidebar_nav";
 import { AddColumnSlideOver } from "./slideovers/add_col";
 import { EditColumnSlideOver } from "./slideovers/edit_col";
-import { AddSchemaSlideOver } from "./slideovers/add_schema";
+import { EditTableSlideOver } from "./slideovers/edit_table";
+// import { AddSchemaSlideOver } from "./slideovers/add_schema";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -38,6 +39,8 @@ export const Dashboard = () => {
         <EditRowSlideOver />
         <AddColumnSlideOver />
         <EditColumnSlideOver />
+        <EditTableSlideOver />
+
         {/* <AddSchemaSlideOver /> */}
 
         {/* Static sidebar for desktop */}
@@ -60,9 +63,9 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        <div className="pl-48 pt-8">
+        <div className="pl-48">
           <main className="">
-            <div className="px-4 ">{<Outlet />}</div>
+            <div className=" pl-4">{<Outlet />}</div>
           </main>
         </div>
       </div>

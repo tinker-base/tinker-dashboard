@@ -19,6 +19,7 @@ import { ProjectDataContext } from "../../states/project_details";
 import {
   ToggleAddTableSlideOver,
   ToggleAddSchemaSlideOver,
+  ToggleEditTableSlideOver,
 } from "../../utils/slideover_handlers";
 
 function classNames(...classes) {
@@ -39,10 +40,13 @@ export const Tables = () => {
     getTableRows,
     selectedSchema,
     setSelectedSchema,
+    selectedTable,
+    setSelectedTable,
+    getTableDescription,
   } = React.useContext(FunctionContexts);
   const { jwt, setProjectURL } = React.useContext(ProjectDataContext);
 
-  const [selectedTable, setSelectedTable] = React.useState("");
+  const toggleEditTable = ToggleEditTableSlideOver();
 
   const userNavigation = [
     { name: "Your profile", href: () => {} },
@@ -98,7 +102,7 @@ export const Tables = () => {
 
   return (
     <>
-      {showDeleteTable ? <DeleteTableModal tableName={selectedTable} /> : null}
+      {showDeleteTable ? <DeleteTableModal /> : null}
       <Link
         to="/dashboard"
         className="text-indigo-100 hover:text-white hover:bg-indigo-700 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -152,7 +156,10 @@ export const Tables = () => {
                 table === tableName ? "text-white bg-indigo-700" : "",
                 `flex justify-between text-indigo-100 hover:text-white hover:bg-indigo-700 rounded-md p-2`
               )}
-              onClick={() => getTableRows(tableName)}
+              onClick={() => {
+                getTableDescription(selectedSchema, tableName);
+                getTableRows(tableName);
+              }}
             >
               <Link
                 to={`tables/${tableName}`}
@@ -183,7 +190,14 @@ export const Tables = () => {
                   leaveTo="transform opacity-0 scale-95"
                 >
                   <Menu.Items className="absolute right-0 z-10 mt-2 w-28 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="py-1">
+                    <div
+                      className="py-1"
+                      data-table_name={tableName}
+                      onClick={(e) => {
+                        setSelectedTable(e.currentTarget.dataset.table_name);
+                        toggleEditTable();
+                      }}
+                    >
                       <Menu.Item>
                         {({ active }) => (
                           <button
@@ -193,9 +207,7 @@ export const Tables = () => {
                                 : "text-gray-700",
                               "group flex items-center px-4 py-2 text-sm"
                             )}
-                            onClick={() => {
-                              console.log("edit table");
-                            }}
+                            data-table_name={tableName}
                           >
                             <PencilSquareIcon
                               className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
@@ -223,13 +235,6 @@ export const Tables = () => {
                                 : "text-gray-700",
                               "group flex items-center px-4 py-2 text-sm"
                             )}
-                            data-tablename={tableName}
-                            onClick={(e) => {
-                              setSelectedTable(
-                                e.currentTarget.dataset.tableName
-                              );
-                              confirmTableDelete();
-                            }}
                           >
                             <TrashIcon
                               className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
