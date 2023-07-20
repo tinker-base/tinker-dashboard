@@ -8,9 +8,9 @@ import { ReactComponent as TinkerLogo } from "../images/SVG Vector Files/tinker_
 import { AddTableSlideOver } from "./slideovers/add_table";
 import { AddRowSlideOver } from "./slideovers/add_row";
 import { EditRowSlideOver } from "./slideovers/edit_row";
+import { EditColumnSlideOver } from "./slideovers/edit_column";
 import { SidebarNav } from "./sidebars/sidebar_nav";
 import { AddColumnSlideOver } from "./slideovers/add_col";
-import { EditColumnSlideOver } from "./slideovers/edit_col";
 import { EditTableSlideOver } from "./slideovers/edit_table";
 // import { AddSchemaSlideOver } from "./slideovers/add_schema";
 

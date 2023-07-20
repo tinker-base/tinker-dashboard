@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const TINKER_ADMIN_IP =
-  process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_TINKER_ADMIN_URL
-    : process.env.REACT_APP_ADMIN_URL;
-// const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
+// const TINKER_ADMIN_IP =
+//   process.env.NODE_ENV === "development"
+//     ? process.env.REACT_APP_TINKER_ADMIN_URL
+//     : process.env.REACT_APP_ADMIN_URL;
+const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
 const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
 console.log(`Build is ${process.env.NODE_ENV}`);
 // const TINKER_ADMIN_IP = "3.137.184.88";
@@ -108,7 +108,7 @@ export const getColumnConstraints = async (url, schema, table, jwt) => {
   try {
     return await axios.post(
       `${protocol}://${url}:3000/rpc/get_column_constraints`,
-      { schema_name: schema, p_table_name: table },
+      { p_schema_name: schema, p_table_name: table },
       {
         headers: { Authorization: `Bearer ${jwt}` },
       }
@@ -300,4 +300,26 @@ export const updateTableDescription = async (formData, url, jwt) => {
   } catch (error) {
     return error.message;
   }
+};
+
+export const deleteColumn = async (url, tableName, columnName, jwt) => {
+  return await axios.post(
+    `${protocol}://${url}:3000/rpc/drop_column_from_table`,
+    { table_name: tableName, column_name: columnName },
+    {
+      headers: { Authorization: `Bearer ${jwt}` },
+    }
+  );
+};
+
+export const alterColumn = async (url, alteration_commands, jwt) => {
+  return await axios.post(
+    `${protocol}://${url}:3000/rpc/alter_column`,
+    {
+      alteration_commands,
+    },
+    {
+      headers: { Authorization: `Bearer ${jwt}` },
+    }
+  );
 };

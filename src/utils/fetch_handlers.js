@@ -24,6 +24,8 @@ import {
   addTableDescription,
   viewTableDescription,
   updateTableDescription,
+  deleteColumn,
+  alterColumn,
 } from "../services/services";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../states/login";
@@ -240,6 +242,7 @@ export const FunctionsShared = ({ children }) => {
         tableName,
         jwt
       );
+
       return response;
     } catch (e) {
       console.log("Error: Could not display table constraints");
@@ -349,6 +352,16 @@ export const FunctionsShared = ({ children }) => {
     }
   };
 
+  const deleteColumnInTable = async (tableName, columnName) => {
+    await deleteColumn(projectURL, tableName, columnName, jwt);
+    await getTableRows(tableName);
+  };
+
+  const alterColumnInTable = async (tableName, alterations) => {
+    await alterColumn(projectURL, alterations, jwt);
+    await getTableRows(tableName);
+  };
+
   return (
     <FunctionContexts.Provider
       value={{
@@ -393,6 +406,8 @@ export const FunctionsShared = ({ children }) => {
         setTableDescription,
         getTableDescription,
         editTableDescription,
+        deleteColumnInTable,
+        alterColumnInTable,
       }}
     >
       {children}

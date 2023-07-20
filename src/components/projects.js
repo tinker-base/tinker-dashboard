@@ -21,7 +21,7 @@ export const Projects = () => {
         }
       })();
     }
-  }, [jwt, getProjects, project]);
+  }, [jwt, getProjects]);
 
   const handleRefreshClick = () => {
     setRotate(true);
