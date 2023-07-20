@@ -188,3 +188,25 @@ export const deleteRow = async (url, tableName, pk, jwt) => {
     }
   );
 };
+
+export const deleteColumn = async (url, tableName, columnName, jwt) => {
+  return await axios.post(
+    `${protocol}://${url}:3000/rpc/drop_column_from_table`,
+    { table_name: tableName, column_name: columnName },
+    {
+      headers: { Authorization: `Bearer ${jwt}` },
+    }
+  );
+};
+
+export const alterColumn = async (url, alteration_commands, jwt) => {
+  return await axios.post(
+    `${protocol}://${url}:3000/rpc/alter_column`,
+    {
+      alteration_commands,
+    },
+    {
+      headers: { Authorization: `Bearer ${jwt}` },
+    }
+  );
+};

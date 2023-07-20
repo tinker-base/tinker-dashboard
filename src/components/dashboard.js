@@ -8,6 +8,7 @@ import { ReactComponent as TinkerLogo } from "../images/SVG Vector Files/tinker_
 import { AddTableSlideOver } from "./slideovers/add_table";
 import { AddRowSlideOver } from "./slideovers/add_row";
 import { EditRowSlideOver } from "./slideovers/edit_row";
+import { EditColumnSlideOver } from "./slideovers/edit_column";
 import { SidebarNav } from "./sidebars/sidebar_nav";
 
 export const Dashboard = () => {
@@ -33,7 +34,7 @@ export const Dashboard = () => {
         <AddTableSlideOver />
         <AddRowSlideOver />
         <EditRowSlideOver />
-
+        <EditColumnSlideOver />
         {/* Static sidebar for desktop */}
         <div
           id="static-sidebar-wrapper"

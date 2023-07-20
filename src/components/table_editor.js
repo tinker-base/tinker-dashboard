@@ -1,11 +1,20 @@
 import React from "react";
 import { useParams } from "react-router";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import {
+  TrashIcon,
+  PencilSquareIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/24/outline";
+import { Menu, Transition } from "@headlessui/react";
 import { SidebarContext } from "../states/sidebar_states";
 import { FunctionContexts } from "../utils/fetch_handlers";
-import { ToggleAddRowSlideOver } from "../utils/slideover_handlers";
+import {
+  ToggleAddRowSlideOver,
+  ToggleEditColumnSlideOver,
+} from "../utils/slideover_handlers";
 import { ShowModalContext } from "../states/show_modals";
 import DeleteRowModal from "./modals/delete_row";
+import DeleteColumnModal from "./modals/delete_column";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -13,16 +22,27 @@ function classNames(...classes) {
 
 export const TableEditor = () => {
   const { table } = useParams();
-  const { setEditRow, setRowData, columnConstraints, setColumnConstraints } =
-    React.useContext(SidebarContext);
+  const {
+    setEditRow,
+    setRowData,
+    columnConstraints,
+    setColumnConstraints,
+    setColumnData,
+    setShowEditCol,
+  } = React.useContext(SidebarContext);
   const {
     columns,
     rows,
     columnConstraintsForTable: getColumnConstraints,
     deleteRowInTable,
+    deleteColumnInTable,
   } = React.useContext(FunctionContexts);
-  const { showDeleteRow, setShowDeleteRow } =
-    React.useContext(ShowModalContext);
+  const {
+    showDeleteRow,
+    setShowDeleteRow,
+    showDeleteColumn,
+    setShowDeleteColumn,
+  } = React.useContext(ShowModalContext);
   const [highlightedRow, setHighlightedRow] = React.useState(0);
 
   React.useEffect(() => {
@@ -41,6 +61,37 @@ export const TableEditor = () => {
     })();
   }, [table, getColumnConstraints, setColumnConstraints]);
 
+  const createColumnValToConstraintObj = (constraints) => {
+    return constraints.reduce((newObj, constraint) => {
+      if (
+        constraint.constraint_type &&
+        Object.keys(constraint.constraint_type).includes("PRIMARY KEY")
+      ) {
+        newObj[constraint.column_name] = {
+          ...constraint,
+          primary: true,
+          id: 1,
+          name: constraint.column_name,
+        };
+      } else {
+        newObj[constraint.column_name] = {
+          ...constraint,
+          primary: false,
+          id: 1,
+          name: constraint.column_name,
+        };
+      }
+
+      return newObj;
+    }, {});
+  };
+
+  let colValToConstraintObj;
+
+  if (columnConstraints.length) {
+    colValToConstraintObj = createColumnValToConstraintObj(columnConstraints);
+  }
+
   const collapseMultipleConstraints = (constraints) => {
     let seen = {};
     constraints.forEach((constraint) => {
@@ -49,11 +100,11 @@ export const TableEditor = () => {
         ? constraint.check_clause
         : constraint.constraint_type;
       if (seen[name]) {
-        seen[name].constraint_type.push(clause); ///Assuming it's already an array
+        seen[name].constraint_type[clause] = constraint.constraint_name; ///Assuming it's already an array
       } else {
         seen[name] = constraint;
         if (clause) {
-          seen[name].constraint_type = [clause];
+          seen[name].constraint_type = { [clause]: constraint.constraint_name };
         }
       }
     });
@@ -64,7 +115,7 @@ export const TableEditor = () => {
     for (let constraint of columnConstraints) {
       if (
         constraint.constraint_type &&
-        constraint.constraint_type.includes("PRIMARY KEY")
+        Object.keys(constraint.constraint_type).includes("PRIMARY KEY")
       ) {
         return constraint.column_name;
       }
@@ -83,6 +134,14 @@ export const TableEditor = () => {
       await deleteRowInTable(table, pkObject);
     } catch (error) {
       console.log("Error: Could not delete row.");
+    }
+  };
+
+  const deleteColumn = async (columnName) => {
+    try {
+      await deleteColumnInTable(table, columnName);
+    } catch (error) {
+      console.log("Error: Could not delete column from table.");
     }
   };
 
@@ -115,7 +174,90 @@ export const TableEditor = () => {
                           "border-b border-gray-300 bg-white py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
                         )}
                       >
-                        {`${column.col} (${column.data_type})`}
+                        <Menu as="div">
+                          <div>
+                            <Menu.Button className="inline-flex w-full align-middle overflow-hidden ">
+                              {`${column.col} (${column.data_type})`}
+                              <ChevronDownIcon
+                                className="-mr-1 h-5 w-5 text-indigo-200 hover:text-indigo-950"
+                                aria-hidden="true"
+                              />
+                            </Menu.Button>
+                          </div>
+
+                          <Transition
+                            as={React.Fragment}
+                            enter="transition ease-out duration-100"
+                            enterFrom="transform opacity-0 scale-95"
+                            enterTo="transform opacity-100 scale-100"
+                            leave="transition ease-in duration-75"
+                            leaveFrom="transform opacity-100 scale-100"
+                            leaveTo="transform opacity-0 scale-95"
+                          >
+                            <Menu.Items className="absolute z-10 mt-2 w-28 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                              <div className="py-1">
+                                <Menu.Item>
+                                  {({ active }) => (
+                                    <button
+                                      className={classNames(
+                                        active
+                                          ? "bg-gray-100 text-gray-900"
+                                          : "text-gray-700",
+                                        "group flex items-center px-4 py-2 text-sm"
+                                      )}
+                                      onClick={() => {
+                                        setColumnData([
+                                          {
+                                            ...colValToConstraintObj[
+                                              column.col
+                                            ],
+                                          },
+                                        ]);
+                                        setShowEditCol(true);
+                                      }}
+                                    >
+                                      <PencilSquareIcon
+                                        className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                        aria-hidden="true"
+                                      />
+                                      Edit
+                                    </button>
+                                  )}
+                                </Menu.Item>
+                              </div>
+                              <div className="py-1">
+                                <Menu.Item>
+                                  {({ active }) => (
+                                    <button
+                                      className={classNames(
+                                        active
+                                          ? "bg-gray-100 text-gray-900"
+                                          : "text-gray-700",
+                                        "group flex items-center px-4 py-2 text-sm"
+                                      )}
+                                      onClick={async (e) => {
+                                        setShowDeleteColumn(true);
+                                        setHighlightedRow(null);
+                                      }}
+                                    >
+                                      <TrashIcon
+                                        className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                        aria-hidden="true"
+                                      />
+                                      Delete
+                                    </button>
+                                  )}
+                                </Menu.Item>
+                              </div>
+                            </Menu.Items>
+                          </Transition>
+                        </Menu>
+                        {showDeleteColumn && (
+                          <DeleteColumnModal
+                            column={column.col}
+                            onDeleteColumn={deleteColumn}
+                          />
+                        )}
                       </th>
                     );
                   })}

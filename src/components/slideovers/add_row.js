@@ -57,25 +57,6 @@ export const AddRowSlideOver = () => {
     }
   };
 
-  // const collapseMultipleConstraints = (constraints) => {
-  //   let seen = {};
-  //   constraints.forEach((constraint) => {
-  //     const name = constraint.column_name;
-  //     let clause = constraint.check_clause
-  //       ? constraint.check_clause
-  //       : constraint.constraint_type;
-  //     if (seen[name]) {
-  //       seen[name].constraint_type.push(clause); ///Assuming it's already an array
-  //     } else {
-  //       seen[name] = constraint;
-  //       if (clause) {
-  //         seen[name].constraint_type = [clause];
-  //       }
-  //     }
-  //   });
-  //   return Object.values(seen);
-  // };
-
   const setPlaceHolder = (constraint) => {
     let placeholder = "";
     if (constraint.column_default) {
@@ -184,7 +165,9 @@ export const AddRowSlideOver = () => {
 
                 <span className="text-gray-400 text-sm italic px-2">
                   {constraint.constraint_type
-                    ? formatClause(constraint.constraint_type.join(", "))
+                    ? formatClause(
+                        Object.keys(constraint.constraint_type).join(", ")
+                      )
                     : ""}
                 </span>
               </div>

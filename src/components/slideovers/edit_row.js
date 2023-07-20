@@ -29,7 +29,6 @@ export const EditRowSlideOver = () => {
       placeholder = placeholder.slice(1, placeholder.length - 1);
     }
 
-    //Need to handle defaults that return CURRENT_TIMESTAMP. It's useful for SQL but an eyesore for us to display
     return placeholder;
   };
 
@@ -46,7 +45,7 @@ export const EditRowSlideOver = () => {
     for (let constraint of columnConstraints) {
       if (
         constraint.constraint_type &&
-        constraint.constraint_type.includes("PRIMARY KEY")
+        Object.keys(constraint.constraint_type).includes("PRIMARY KEY")
       ) {
         return constraint.column_name;
       }
@@ -81,25 +80,6 @@ export const EditRowSlideOver = () => {
       setErrorBanner(true);
     }
   };
-
-  // const collapseMultipleConstraints = (constraints) => {
-  //   let seen = {};
-  //   constraints.forEach((constraint) => {
-  //     const name = constraint.column_name;
-  //     let clause = constraint.check_clause
-  //       ? constraint.check_clause
-  //       : constraint.constraint_type;
-  //     if (seen[name]) {
-  //       seen[name].constraint_type.push(clause); ///Assuming it's already an array
-  //     } else {
-  //       seen[name] = constraint;
-  //       if (clause) {
-  //         seen[name].constraint_type = [clause];
-  //       }
-  //     }
-  //   });
-  //   return Object.values(seen);
-  // };
 
   const setPlaceHolder = (constraint) => {
     let placeholder = "";
@@ -244,7 +224,9 @@ export const EditRowSlideOver = () => {
 
                 <span className="text-gray-400 text-sm italic px-2">
                   {constraint.constraint_type
-                    ? formatClause(constraint.constraint_type.join(", "))
+                    ? formatClause(
+                        Object.keys(constraint.constraint_type).join(", ")
+                      )
                     : ""}
                 </span>
               </div>

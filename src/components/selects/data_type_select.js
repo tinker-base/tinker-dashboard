@@ -44,8 +44,10 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const DataTypeSelect = ({ id, onColInputChange }) => {
-  const [selected, setSelected] = useState(datatypes[0]);
+export const DataTypeSelect = ({ id, onColInputChange, value }) => {
+  const [selected, setSelected] = useState(
+    value ? datatypes.find((datatype) => datatype.id === value) : datatypes[0]
+  );
 
   return (
     <Listbox

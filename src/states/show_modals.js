@@ -5,6 +5,7 @@ export const ShowModalContext = React.createContext();
 export const ShowModalStates = ({ children }) => {
   const [showDeleteTable, setShowDeleteTable] = React.useState(false);
   const [showDeleteRow, setShowDeleteRow] = React.useState(false);
+  const [showDeleteColumn, setShowDeleteColumn] = React.useState(false);
 
   return (
     <ShowModalContext.Provider
@@ -13,6 +14,8 @@ export const ShowModalStates = ({ children }) => {
         setShowDeleteTable,
         showDeleteRow,
         setShowDeleteRow,
+        showDeleteColumn,
+        setShowDeleteColumn,
       }}
     >
       {children}
