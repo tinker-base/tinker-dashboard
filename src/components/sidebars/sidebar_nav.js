@@ -16,11 +16,6 @@ const navigation = [
   },
   // { name: "Users", href: "/dashboard/users", icon: UsersIcon, current: false },
 ];
-const teams = [
-  // { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
-  // { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
-  // { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -30,7 +25,7 @@ export const SidebarNav = () => {
   const signOut = useSignOut();
 
   const userNavigation = [
-    { name: "Your profile", href: () => {} },
+    // { name: "Your profile", href: () => {} },
     { name: "Sign out", href: signOut },
   ];
 
@@ -64,31 +59,7 @@ export const SidebarNav = () => {
           ))}
         </ul>
       </li>
-      <li>
-        <div className="text-xs font-semibold leading-6 text-indigo-200">
-          Your teams
-        </div>
-        <ul className="-mx-2 mt-2 space-y-1">
-          {teams.map((team) => (
-            <li key={team.name}>
-              <a
-                href={team.href}
-                className={classNames(
-                  team.current
-                    ? "bg-indigo-700 text-white"
-                    : "text-indigo-200 hover:text-white hover:bg-indigo-700",
-                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                )}
-              >
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
-                  {team.initial}
-                </span>
-                <span className="truncate">{team.name}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </li>
+
       <li className="mt-auto">
         {/* Settings popup */}
 
@@ -110,7 +81,7 @@ export const SidebarNav = () => {
                       onClick={() => item.href()}
                       className={classNames(
                         active ? "bg-gray-50" : "",
-                        "block px-3 py-1 text-sm leading-6 text-gray-900"
+                        "block px-3 py-1 text-sm w-full text-left leading-6 text-gray-900"
                       )}
                     >
                       {item.name}
@@ -120,10 +91,10 @@ export const SidebarNav = () => {
               ))}
             </Menu.Items>
           </Transition>
-          <Menu.Button className="-m-1.5 flex items-center p-1.5">
+          <Menu.Button className="-m-1.5 flex w-full items-center p-1.5 rounded-md hover:bg-indigo-700 hover:text-white">
             <span className="sr-only">Open user menu</span>
-            <span className=" flex items-center">
-              <span className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white">
+            <span className=" flex items-center w-full">
+              <span className="group -mx-2 flex gap-x-3  p-2 text-sm font-semibold leading-6 text-indigo-200  ">
                 <Cog6ToothIcon
                   className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
                   aria-hidden="true"

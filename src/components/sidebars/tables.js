@@ -49,7 +49,7 @@ export const Tables = () => {
   const toggleEditTable = ToggleEditTableSlideOver();
 
   const userNavigation = [
-    { name: "Your profile", href: () => {} },
+    // { name: "Your profile", href: () => {} },
     { name: "Sign out", href: signOut },
   ];
 
@@ -252,7 +252,7 @@ export const Tables = () => {
           ))}
         </ul>
       </div>
-      <div className="mt-auto">
+      <div className="fixed bottom-4 w-44">
         {/* Settings popup */}
 
         <Menu as="div" className="relative">
@@ -273,7 +273,7 @@ export const Tables = () => {
                       onClick={() => item.href()}
                       className={classNames(
                         active ? "bg-gray-50" : "",
-                        "block px-3 py-1 text-sm leading-6 text-gray-900"
+                        "block px-3 py-1 text-sm w-full text-left leading-6 text-gray-900"
                       )}
                     >
                       {item.name}
@@ -283,10 +283,10 @@ export const Tables = () => {
               ))}
             </Menu.Items>
           </Transition>
-          <Menu.Button className="-m-1.5 flex items-center p-1.5">
+          <Menu.Button className="-m-1.5 flex w-full items-center p-1.5 rounded-md hover:bg-indigo-700 hover:text-white">
             <span className="sr-only">Open user menu</span>
-            <span className="flex items-center">
-              <span className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white">
+            <span className=" flex items-center w-full">
+              <span className="group -mx-2 flex gap-x-3  p-2 text-sm font-semibold leading-6 text-indigo-200  ">
                 <Cog6ToothIcon
                   className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
                   aria-hidden="true"
