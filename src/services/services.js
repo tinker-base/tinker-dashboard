@@ -1,13 +1,8 @@
 import axios from "axios";
 
-// const TINKER_ADMIN_IP =
-//   process.env.NODE_ENV === "development"
-//     ? process.env.REACT_APP_TINKER_ADMIN_URL
-//     : process.env.REACT_APP_ADMIN_URL;
 const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
 const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
 console.log(`Build is ${process.env.NODE_ENV}`);
-// const TINKER_ADMIN_IP = "3.137.184.88";
 
 // Admin DB Routes
 
@@ -137,11 +132,6 @@ export const getAllSchemas = async (url, jwt) => {
   }
 };
 
-//formData = {schema_name,
-// table_name,
-// columns: [],
-// primary_key_column}
-
 export const createNewTable = async (formData, url, jwt) => {
   try {
     return await axios.post(
@@ -170,7 +160,6 @@ export const deleteTable = async (schema, tableName, url, jwt) => {
   }
 };
 
-// formData= {schema_name: string, old_table_name: string, new_table_name: string}
 export const editTable = async (formData, url, jwt) => {
   try {
     return axios.post(
@@ -259,7 +248,6 @@ export const createSchema = async (formData, url, jwt) => {
   }
 };
 
-// formData = {p_table_name: string, p_comment: string}
 export const addTableDescription = async (formData, url, jwt) => {
   try {
     return axios.post(

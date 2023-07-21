@@ -52,7 +52,6 @@ export const TableEditor = () => {
     (async () => {
       try {
         const response = await getColumnConstraints(table);
-        console.log(response.data);
         if (response) {
           const multipleConstraintsCollapsed = collapseMultipleConstraints(
             response.data

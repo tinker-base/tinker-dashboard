@@ -127,7 +127,7 @@ export const EditColumnSlideOver = () => {
     if (changedData.column_default !== undefined) {
       result.push(
         `${alterTableString} ALTER COLUMN ${columnName} SET DEFAULT ${
-          changedData.column_default || "NULL"
+          `'${changedData.column_default}'` || "NULL"
         };`
       );
     }

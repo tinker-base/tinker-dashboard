@@ -112,7 +112,7 @@ export const AddColumnSlideOver = () => {
       }
       if (col.default) {
         currentCol.push("DEFAULT");
-        currentCol.push(col.default);
+        currentCol.push(`'${col.default}'`);
       }
       const fk = foreignKeys.find((fk) => fk.id === col.id);
       if (fk) {

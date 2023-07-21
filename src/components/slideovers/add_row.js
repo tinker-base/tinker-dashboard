@@ -23,8 +23,6 @@ export const AddRowSlideOver = () => {
     if (placeholder[0] === "'") {
       placeholder = placeholder.slice(1, placeholder.length - 1);
     }
-
-    //Need to handle defaults that return CURRENT_TIMESTAMP. It's useful for SQL but an eyesore for us to display
     return placeholder;
   };
 
@@ -36,8 +34,6 @@ export const AddRowSlideOver = () => {
       return newObj;
     }, {});
   };
-
-  console.log(columnConstraints);
 
   const addRowToTable = async (e) => {
     e.preventDefault();
@@ -74,6 +70,16 @@ export const AddRowSlideOver = () => {
     }
 
     return placeholder;
+  };
+
+  const setInputType = (placeholder, dataType) => {
+    if (placeholder === "CURRENT_TIMESTAMP" || dataType === "timestamp") {
+      return "datetime-local";
+    } else if (dataType === "date") {
+      return "date";
+    } else {
+      return "text";
+    }
   };
 
   const formatClause = (string) => {
@@ -126,7 +132,7 @@ export const AddRowSlideOver = () => {
     } else {
       return (
         <input
-          type={placeholder === "CURRENT_TIMESTAMP" ? "datetime-local" : "text"}
+          type={setInputType(placeholder, constraintObj.data_type)}
           name="project-name"
           placeholder={placeholder}
           value={columnValues[columnName] || ""}

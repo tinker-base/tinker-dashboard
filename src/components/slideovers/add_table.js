@@ -111,7 +111,7 @@ export const AddTableSlideOver = () => {
       currentCol.push(col.type);
       if (col.default) {
         currentCol.push("DEFAULT");
-        currentCol.push(col.default);
+        currentCol.push(`'${col.default}'`);
       }
       const fk = foreignKeys.find((fk) => fk.id === col.id);
       if (fk) {
@@ -239,8 +239,9 @@ export const AddTableSlideOver = () => {
     } else if (!validTableName(formData.name) && blurs.name) {
       return (
         <span className="text-red-600 text-xs">
-          Project name must start with (a-z) or (_) & only contains (a-z), (0-9)
-          and (_).
+          Project name must start with lowercase letters (a-z) or underscore (_)
+          & may only contain lowercase letters (a-z), numbers (0-9) and
+          underscore (_).
         </span>
       );
     } else {
