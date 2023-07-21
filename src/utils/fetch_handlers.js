@@ -115,10 +115,10 @@ export const FunctionsShared = ({ children }) => {
   };
 
   const handleProjectSelect = (project) => {
-    setProjectURL(project.ip);
-    getSchemas(project.ip);
-    getTables(project.ip);
-    sessionStorage.setItem("projectIP", project.ip);
+    setProjectURL(project.domain);
+    getSchemas(project.domain);
+    getTables(project.domain);
+    sessionStorage.setItem("projectIP", project.domain);
   };
 
   const handleLogin = async (credentials) => {
