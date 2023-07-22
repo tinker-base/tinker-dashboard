@@ -16,6 +16,8 @@ const Column = ({
   onColInputChange,
   onPrimaryRadioClick,
   setCurrentCol,
+  onNotNullClick,
+  onUniqeClick,
 }) => {
   const { setShowForeignKey } = React.useContext(SidebarContext);
 
@@ -64,6 +66,20 @@ const Column = ({
           checked={column.primary}
         />
       </div>
+      <div className="flex justify-center col-span-1">
+        <input
+          name="notNull"
+          type="checkbox"
+          onChange={() => onNotNullClick(column.id)}
+        />
+      </div>
+      <div className="flex justify-center col-span-1">
+        <input
+          name="unique"
+          type="checkbox"
+          onChange={() => onUniqeClick(column.id)}
+        />
+      </div>
       <div className="flex justify-center col-span-1 cursor-pointer hover:text-gray-600">
         <TrashIcon
           className="w-6 h-6"
@@ -87,9 +103,11 @@ export const AddTableSlideOver = () => {
     {
       id: 1,
       name: "id",
-      type: "int4",
+      type: "",
       default: "",
       primary: true,
+      notNull: false,
+      unique: false,
     },
   ]);
   const [columnCount, setColCount] = React.useState(2);
@@ -109,6 +127,12 @@ export const AddTableSlideOver = () => {
       const currentCol = [];
       currentCol.push(col.name);
       currentCol.push(col.type);
+      if (col.notNull) {
+        currentCol.push("NOT NULL");
+      }
+      if (col.unique) {
+        currentCol.push("UNIQUE");
+      }
       if (col.default) {
         currentCol.push("DEFAULT");
         currentCol.push(`'${col.default}'`);
@@ -146,6 +170,8 @@ export const AddTableSlideOver = () => {
         type: "",
         default: "",
         primary: false,
+        notNull: false,
+        unique: false,
       })
     );
     setColCount((prev) => prev + 1);
@@ -164,9 +190,11 @@ export const AddTableSlideOver = () => {
       {
         id: 1,
         name: "id",
-        type: "int4",
+        type: "",
         default: "",
         primary: true,
+        notNull: false,
+        unique: false,
       },
     ]);
     setColCount(2);
@@ -200,6 +228,28 @@ export const AddTableSlideOver = () => {
       return column;
     });
     setColumns(updated);
+  };
+
+  const toggleUniqueCheckbox = (id) => {
+    setColumns((prev) => {
+      return prev.map((col) => {
+        if (col.id === id) {
+          return { ...col, unique: !col.unique };
+        }
+        return col;
+      });
+    });
+  };
+
+  const toggleNotNullCheckbox = (id) => {
+    setColumns((prev) => {
+      return prev.map((col) => {
+        if (col.id === id) {
+          return { ...col, notNull: !col.notNull };
+        }
+        return col;
+      });
+    });
   };
 
   const togglePrimaryRadio = (id) => {
@@ -276,7 +326,7 @@ export const AddTableSlideOver = () => {
                   leaveFrom="translate-x-0"
                   leaveTo="translate-x-full"
                 >
-                  <Dialog.Panel className="pointer-events-auto w-screen max-w-xl">
+                  <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
                     <div
                       aria-live="assertive"
                       className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6 z-100"
@@ -406,7 +456,7 @@ export const AddTableSlideOver = () => {
                         </div>
                         <div className="p-6">
                           <span>Columns</span>
-                          <div className="grid justify-items-center grid-cols-9 gap-2 items-center content-center ">
+                          <div className="grid justify-items-center grid-cols-11 gap-2 items-center content-center ">
                             <div className="col-span-2">
                               <h5>Name</h5>
                             </div>
@@ -422,13 +472,15 @@ export const AddTableSlideOver = () => {
                             <div className="col-span-1">
                               <h5>Primary Key</h5>
                             </div>
+                            <div className="col-span-1 text-center">
+                              <h5>Not Null</h5>
+                            </div>
+                            <div className="col-span-1">
+                              <h5>Unique</h5>
+                            </div>
                             <div className="col-span-1">
                               <h5>Delete</h5>
                             </div>
-                            {/* 
-                            <div className="">
-                            <h5>Unique</h5>
-                          </div> */}
 
                             {columns.map((column) => {
                               return (
@@ -440,6 +492,8 @@ export const AddTableSlideOver = () => {
                                   onColInputChange={handleColumnInputChange}
                                   onPrimaryRadioClick={togglePrimaryRadio}
                                   setCurrentCol={setCurrentCol}
+                                  onNotNullClick={toggleNotNullCheckbox}
+                                  onUniqeClick={toggleUniqueCheckbox}
                                 />
                               );
                             })}

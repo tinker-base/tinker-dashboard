@@ -18,7 +18,7 @@ import { FunctionContexts } from "../../utils/fetch_handlers";
 import { ProjectDataContext } from "../../states/project_details";
 import {
   ToggleAddTableSlideOver,
-  ToggleAddSchemaSlideOver,
+  // ToggleAddSchemaSlideOver,
   ToggleEditTableSlideOver,
 } from "../../utils/slideover_handlers";
 
@@ -40,7 +40,6 @@ export const Tables = () => {
     getTableRows,
     selectedSchema,
     setSelectedSchema,
-    selectedTable,
     setSelectedTable,
     getTableDescription,
   } = React.useContext(FunctionContexts);
