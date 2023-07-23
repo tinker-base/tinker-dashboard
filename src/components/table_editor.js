@@ -75,6 +75,9 @@ export const TableEditor = () => {
           primary: true,
           id: 1,
           name: constraint.column_name,
+          unique: constraint.constraint_type
+            ? Object.keys(constraint.constraint_type).includes("UNIQUE")
+            : false,
         };
       } else {
         newObj[constraint.column_name] = {
@@ -82,6 +85,9 @@ export const TableEditor = () => {
           primary: false,
           id: 1,
           name: constraint.column_name,
+          unique: constraint.constraint_type
+            ? Object.keys(constraint.constraint_type).includes("UNIQUE")
+            : false,
         };
       }
 

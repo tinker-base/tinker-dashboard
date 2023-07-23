@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { LinkIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { LinkIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { SidebarContext } from "../../states/sidebar_states";
 import { DataTypeSelect } from "../selects/data_type_select";
 import { SuccessBanner } from "../banners/success_banner";
@@ -12,6 +12,8 @@ import { useParams } from "react-router";
 const Column = ({
   column,
   onColInputChange,
+  onColNullClick,
+  onColUniqueClick,
   onPrimaryRadioClick,
   setCurrentCol,
   formatDefault,
@@ -66,6 +68,22 @@ const Column = ({
           checked={column.primary}
         />
       </div>
+      <div className="flex justify-center col-span-1">
+        <input
+          name="notNull"
+          type="checkbox"
+          onChange={() => onColNullClick(column.id)}
+          checked={!!column.nullable}
+        />
+      </div>
+      <div className="flex justify-center col-span-1">
+        <input
+          name="unique"
+          type="checkbox"
+          onChange={() => onColUniqueClick(column.id)}
+          checked={column.unique}
+        />
+      </div>
     </>
   );
 };
@@ -88,7 +106,6 @@ export const EditColumnSlideOver = () => {
     if (columnData.length) {
       let copy = JSON.stringify(columnData);
       copy = JSON.parse(copy);
-      console.log(copy);
       setColumnDataCopy(copy);
     }
   }, [columnData]);
@@ -133,11 +150,32 @@ export const EditColumnSlideOver = () => {
     }
 
     if (changedData.primary) {
-      const pkey = getPrimaryKeyName(columnConstraints);
+      const pkey = getConstraintKeyName(columnConstraints, "PRIMARY KEY");
       result.push(
         `${alterTableString} DROP CONSTRAINT ${pkey};`,
         `${alterTableString} ADD PRIMARY KEY (${columnName});`
       );
+    }
+
+    if (changedData.unique !== undefined) {
+      const uniqueKey = getConstraintKeyName(columnConstraints, "UNIQUE");
+      if (uniqueKey) {
+        result.push(`${alterTableString} DROP CONSTRAINT ${uniqueKey};`);
+      } else {
+        result.push(`${alterTableString} ADD UNIQUE (${columnName});`);
+      }
+    }
+
+    if (changedData.nullable !== undefined) {
+      if (!changedData.nullable) {
+        result.push(
+          `${alterTableString} ALTER COLUMN ${columnName} DROP NOT NULL;`
+        );
+      } else {
+        result.push(
+          `${alterTableString} ALTER COLUMN ${columnName} SET NOT NULL;`
+        );
+      }
     }
 
     const fk = foreignKeys.find((fk) => fk.id === 1);
@@ -164,13 +202,13 @@ export const EditColumnSlideOver = () => {
     );
   };
 
-  const getPrimaryKeyName = (columnConstraints) => {
+  const getConstraintKeyName = (columnConstraints, keyName) => {
     for (let constraint of columnConstraints) {
       if (
         constraint.constraint_type &&
-        Object.keys(constraint.constraint_type).includes("PRIMARY KEY")
+        Object.keys(constraint.constraint_type).includes(keyName)
       ) {
-        return constraint.constraint_type["PRIMARY KEY"];
+        return constraint.constraint_type[keyName];
       }
     }
   };
@@ -252,6 +290,23 @@ export const EditColumnSlideOver = () => {
     setColumnDataCopy([...columnDataCopy]);
   };
 
+  const toggleUniqueClick = (id) => {
+    columnDataCopy[0] = {
+      ...columnDataCopy[0],
+      unique: !columnDataCopy[0].unique,
+    };
+
+    setColumnDataCopy([...columnDataCopy]);
+  };
+
+  const toggleNullClick = (id) => {
+    columnDataCopy[0] = {
+      ...columnDataCopy[0],
+      nullable: columnDataCopy[0].nullable ? "" : "NOT NULL",
+    };
+    setColumnDataCopy([...columnDataCopy]);
+  };
+
   const returnAlteredData = (newDataObj, oldDataObj) => {
     return Object.keys(newDataObj).reduce((newObj, key) => {
       if (newDataObj[key] !== oldDataObj[key] && key !== "constraint_type") {
@@ -289,7 +344,7 @@ export const EditColumnSlideOver = () => {
                   leaveFrom="translate-x-0"
                   leaveTo="translate-x-full"
                 >
-                  <Dialog.Panel className="pointer-events-auto w-screen max-w-xl">
+                  <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
                     <div
                       aria-live="assertive"
                       className="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6 z-100"
@@ -343,7 +398,7 @@ export const EditColumnSlideOver = () => {
                           </div>
                         </div>
                         <div className="p-6">
-                          <div className="grid justify-items-center grid-cols-9 gap-2 items-center content-center ">
+                          <div className="grid justify-items-center grid-cols-10 gap-2 items-center content-center ">
                             <div className="col-span-2">
                               <h5>Name</h5>
                             </div>
@@ -359,6 +414,12 @@ export const EditColumnSlideOver = () => {
                             <div className="col-span-1">
                               <h5>Primary Key</h5>
                             </div>
+                            <div className="col-span-1 text-center">
+                              <h5>Not Null</h5>
+                            </div>
+                            <div className="col-span-1">
+                              <h5>Unique</h5>
+                            </div>
 
                             {columnDataCopy.length &&
                               columnDataCopy.map((column) => {
@@ -369,6 +430,8 @@ export const EditColumnSlideOver = () => {
                                     column={column}
                                     onColInputChange={handleColumnInputChange}
                                     onPrimaryRadioClick={togglePrimaryRadio}
+                                    onColNullClick={toggleNullClick}
+                                    onColUniqueClick={toggleUniqueClick}
                                     setCurrentCol={setCurrentCol}
                                     formatDefault={formatDefaultVal}
                                   />
