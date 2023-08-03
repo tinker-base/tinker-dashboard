@@ -30,13 +30,13 @@ The dashboard simplifies working with PostgreSQL by providing commonly used SQL 
   <img src="./src/images/screen_shots/projects.png">
 </p>
 
-### View Tables
+### View Table
 
 <p align="center">
   <img src="./src/images/screen_shots/tableEditor.png">
 </p>
 
-### Create Tables
+### Create Table
 
 <p align="center">
   <img src="./src/images/screen_shots/newTable.png">
@@ -48,7 +48,7 @@ The dashboard simplifies working with PostgreSQL by providing commonly used SQL 
   <img src="./src/images/screen_shots/foreignKey.png">
 </p>
 
-### Insert Rows
+### Insert Row
 
 <p align="center">
   <img src="./src/images/screen_shots/addRow.png">
@@ -60,16 +60,19 @@ The dashboard simplifies working with PostgreSQL by providing commonly used SQL 
   <img src="./src/images/screen_shots/editRow.png">
 </p>
 
-### Deletions
+### Delete Table
 
 <p align="center">
   <img src="./src/images/screen_shots/deleteTable.png">
 </p>
 
+### Delete Row
+
 <p align="center">
   <img src="./src/images/screen_shots/deleteRow.png">
 </p>
 
+### Delete Column
 <p align="center">
   <img src="./src/images/screen_shots/deleteColumn.png">
 </p>
