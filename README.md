@@ -20,20 +20,56 @@ Create public facing backends with minimal configuration in your AWS account thr
 
 The dashboard UI displays all active backends in your Tinker deployment. Each backend is interactive — view and alter the data associated with your backends. The dashboard essentially acts as an interface to your backend's PostgreSQL database.
 
-<p align="center">
-  <img src="./src/images/screen_shot_tableEditor.png">
-</p>
-
 ## Usage
 
 The dashboard simplifies working with PostgreSQL by providing commonly used SQL commands through a graphical interface.
 
 ### View Backends
 
+<p align="center">
+  <img src="./src/images/screen_shots/projects.png">
+</p>
+
 ### View Tables
+
+<p align="center">
+  <img src="./src/images/screen_shots/tableEditor.png">
+</p>
 
 ### Create Tables
 
+<p align="center">
+  <img src="./src/images/screen_shots/newTable.png">
+</p>
+
 ### Foreign Keys
 
+<p align="center">
+  <img src="./src/images/screen_shots/foreignKey.png">
+</p>
+
 ### Insert Rows
+
+<p align="center">
+  <img src="./src/images/screen_shots/addRow.png">
+</p>
+
+### Update Row
+
+<p align="center">
+  <img src="./src/images/screen_shots/editRow.png">
+</p>
+
+### Deletions
+
+<p align="center">
+  <img src="./src/images/screen_shots/deleteTable.png">
+</p>
+
+<p align="center">
+  <img src="./src/images/screen_shots/deleteRow.png">
+</p>
+
+<p align="center">
+  <img src="./src/images/screen_shots/deleteColumns.png">
+</p>
