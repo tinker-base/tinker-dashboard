@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
+const TINKER_ADMIN_IP = "3.137.184.88";
+// const TINKER_ADMIN_IP = process.env.REACT_APP_ADMIN_URL;
 const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
 console.log(`Build is ${process.env.NODE_ENV}`);
 
