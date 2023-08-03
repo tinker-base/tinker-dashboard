@@ -71,5 +71,5 @@ The dashboard simplifies working with PostgreSQL by providing commonly used SQL 
 </p>
 
 <p align="center">
-  <img src="./src/images/screen_shots/deleteColumns.png">
+  <img src="./src/images/screen_shots/deleteColumn.png">
 </p>
